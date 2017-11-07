@@ -1,0 +1,6 @@
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles/edit_cache.dir
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles/rebuild_cache.dir
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles/utgraphicsutil.dir
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/src/CMakeFiles/rebuild_cache.dir
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/src/CMakeFiles/edit_cache.dir
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/src/CMakeFiles/skinning.dir
