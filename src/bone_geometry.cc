@@ -55,7 +55,7 @@ Skeleton::~Skeleton()
 
 void Skeleton::addRootBone(glm::vec3 offset)
 {
-	bone_root = new Bone(0, offset, NULL, glm::mat4(1.0f));
+	bone_root = new Bone(0, offset, NULL);
 }
 
 void Skeleton::generateVertices()
@@ -68,16 +68,10 @@ void Skeleton::generateVertices()
 
 void Skeleton::addBone(int _jid, glm::vec3 offset, int parent)
 {
-	glm::mat4 Rs(1.0f);
-	Bone* parent_bone = bone_root->findBone(parent, Rs);
-	// std::cout << "parent bone found: " << (parent_bone == NULL) << "\n";
-	parent_bone->addBone(_jid, offset, Rs);
+	glm::mat4 TRs(1.0f);
+	Bone* parent_bone = bone_root->findBone(parent, TRs);
+	parent_bone->addBone(_jid, offset);
 }
-
-// void Skeleton::findBoneIntersect(const Ray* ray, Bone* bone, float& t)
-// {
-// 	bone_root->findBoneIntersect(ray, bone, t, glm::mat4(1.0f));	
-// }
 
 const std::vector<glm::vec4>& Skeleton::getVertices() const
 {
@@ -89,10 +83,25 @@ std::vector<glm::vec4>& Skeleton::getVerticesVector()
 	return skeleton_vertices;
 }
 
+void Skeleton::initVertices(std::vector<glm::vec4>& vertices, int size)
+{
+	for(int i = 0; i < size; ++i)
+		vertices.push_back(glm::vec4(0.0f,0.0f,0.0f,0.0f));	
+}
+
 void Skeleton::initCylinderVertices()
 {
-	for(int i = 0; i < BONE_LINE_COUNT*2; ++i)
-		cylinder_vertices.push_back(glm::vec4(0.0f,0.0f,0.0f,0.0f));
+	initVertices(cylinder_vertices, BONE_LINE_COUNT*2);;
+}
+
+void Skeleton::initNormalVertices()
+{
+	initVertices(normal_vertices, 2);
+}
+
+void Skeleton::initBinormalVertices()
+{
+	initVertices(binormal_vertices, 2);
 }
 
 
@@ -101,23 +110,50 @@ const std::vector<glm::vec4>& Skeleton::getCylinderVertices() const
 	return cylinder_vertices;
 }
 
+std::vector<glm::vec4>& Skeleton::getCylinderVerticesVector()
+{
+	return cylinder_vertices;
+}
+
+const std::vector<glm::vec4>& Skeleton::getNormalVertices() const
+{
+	return normal_vertices;
+}
+
+const std::vector<glm::vec4>& Skeleton::getBinormalVertices() const
+{
+	return binormal_vertices;
+}
+
 void Skeleton::highlightBones(const Ray& ray)
 {
 	cylinder_vertices.clear();
+	normal_vertices.clear();
+	binormal_vertices.clear();
+
+	glm::mat4 Trs = glm::mat4(1.0f);
+	Bone* reference_bone = bone_root->findBone(TEST_BONE, Trs);
+	Ray localRay;
+	reference_bone->createLocalRay(localRay, ray, Trs);
+	glm::vec3 q = localRay.p + 100000.0f * localRay.v;
+	skeleton_vertices[skeleton_vertices.size()-2] = glm::vec4(localRay.p.x, localRay.p.y, localRay.p.z, 1.0f);
+	skeleton_vertices[skeleton_vertices.size()-1] = glm::vec4(q.x, q.y, q.z, 1.0f);
 
 	float t = std::numeric_limits<float>::max();
 	Bone* highlight_bone = NULL;
 	glm::mat4 TRs(1.0f);
 
-	bone_root->findBoneIntersect(ray, highlight_bone, t, glm::mat4(1.0f), TRs);
+	bone_root->findBoneIntersect(ray, highlight_bone, t, glm::mat4(1.0f), TRs, skeleton_vertices);
+	std::cout << "highlight_bone is NULL" << (highlight_bone == NULL) << "\n";
 
 	if(highlight_bone != NULL)
 	{
-		//glm::mat4 TRs(1.0f);
-		//if(highlight_bone->hasParent())
-		//	highlight_bone->generateBoneTRs(TRs);
-
+		std::cout << "bone found: " << highlight_bone->getJid() << "\n";
+		highlight_bone->boneScan();
 		highlight_bone->generateCylinderLines(cylinder_vertices, TRs, HIGHLIGHT_RADIUS);
+		//highlight_bone->generateAxis(cylinder_vertices, TRs, HIGHLIGHT_RADIUS);
+		highlight_bone->generateNormalAxis(normal_vertices, TRs, AXIS_LENGTH);
+		highlight_bone->generateBinormalAxis(binormal_vertices, TRs, AXIS_LENGTH);
 	}
 }
 
@@ -154,31 +190,30 @@ void Bone::generateBoneTRs(glm::mat4& TRs)
 		parent_bone->generateBoneTRs(TRs);
 }
 
-void Bone::intersectRay(const Ray& ray, Bone* bone, float& t, glm::mat4 TRS, glm::mat4& TRs)
+void Bone::createLocalRay(Ray& localRay, const Ray& ray, glm::mat4 TRS)
 {
-	//std::cout << "1\n";
-	// Convert ray to local coordinates
-	Ray localRay;
+	glm::vec3 q = ray.p + ray.v;
 
 	glm::vec4 ray_p4 = glm::vec4(ray.p.x, ray.p.y, ray.p.z, 1.0f);
-	glm::vec4 ray_v4 = glm::vec4(ray.v.x, ray.v.y, ray.v.z, 1.0f);
-
-	//std::cout << "2\n";
-
-	//print_matrix(T);
-	//print_matrix((Axis));
-	//print_matrix(glm::inverse(TRS * T));
-	//print_matrix(glm::inverse(Axis));
+	//glm::vec4 ray_v4 = glm::vec4(ray.v.x, ray.v.y, ray.v.z, 1.0f);
+	glm::vec4 ray_q4 = glm::vec4(q.x, q.y, q.z, 1.0f);
 
 	glm::vec4 localRay_p4 = glm::inverse(TRS * T) * ray_p4;
-	glm::vec4 localRay_v4 = glm::inverse(Axis) * ray_v4;
-
-	//std::cout << "3\n";
+	glm::vec4 localRay_q4 = glm::inverse(TRS * T) * ray_q4;
+	
+	//glm::vec4 localRay_v4 = glm::inverse(Axis) * ray_v4;
+	glm::vec4 localRay_v4 = localRay_q4 - localRay_p4;
 
 	localRay.p = glm::vec3(localRay_p4.x, localRay_p4.y, localRay_p4.z);
 	localRay.v = glm::vec3(localRay_v4.x, localRay_v4.y, localRay_v4.z);
+}
 
-	//std::cout << "4\n";
+void Bone::intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs, std::vector<glm::vec4>& skeleton_vertices)
+{
+	// Convert ray to local coordinates
+	Ray localRay;
+
+	createLocalRay(localRay, ray, TRS);
 
 	float tx0 = 0.0f;
 	float tx1 = 0.0f;
@@ -259,24 +294,30 @@ void Bone::intersectRay(const Ray& ray, Bone* bone, float& t, glm::mat4 TRS, glm
 	if(t2_start > t1_end)
 		return;
 
-	std::cout << "13\n";
+	std::cout << "13: " << "t2_start" << t2_start << " t: " << t << "\n";
 
 	// t2_start is now the t_start
 	if(t2_start < t)
 	{
+		std::cout << "we in der" << "\n";
 		t = t2_start;
 		bone = (this);
 		TRs = TRS;
+		std::cout << "bone is NULL? " << (bone == NULL) << "\n";
 	}
 
 	//std::cout << "14\n";
 }
 
-void Bone::findBoneIntersect(const Ray& ray, Bone* bone, float& t, glm::mat4 TRS, glm::mat4& TRs)
+void Bone::findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs, std::vector<glm::vec4>& skeleton_vertices)
 {
 	if(jid != 0)
 	{
-		intersectRay(ray, bone, t, TRS, TRs);
+		intersectRay(ray, bone, t, TRS, TRs, skeleton_vertices);
+		//if(bone != NULL)
+		//{
+		//	std::cout << "Bone isn't null\n";
+		//}
 	}
 
 	glm::mat4 new_TR = TRS * T * R;
@@ -285,7 +326,7 @@ void Bone::findBoneIntersect(const Ray& ray, Bone* bone, float& t, glm::mat4 TRS
 	for(iter i = bone_children.begin(); i != bone_children.end(); ++i) 
 	{
 		Bone* bone_child = (*i);
-		bone_child->findBoneIntersect(ray, bone, t, new_TR, TRs);
+		bone_child->findBoneIntersect(ray, bone, t, new_TR, TRs, skeleton_vertices);
 	}	
 }
 
@@ -312,6 +353,50 @@ void Bone::generateCylinderLines(std::vector<glm::vec4>& skeleton_vertices, glm:
 	}
 }
 
+void Bone::generateCylinderLinesRaw(std::vector<glm::vec4>& skeleton_vertices, float radius)
+{
+	//float radius = 0.1f;
+	float angle;
+	for(angle = 0.0f; angle < (2.0f*M_PI); angle += 2.0f*M_PI/BONE_LINE_COUNT)
+	{
+		glm::vec4 start_joint = glm::vec4(0.0f, radius*glm::cos(angle), radius*glm::sin(angle), 1.0f);
+		glm::vec4 end_joint = glm::vec4(Length, radius*glm::cos(angle), radius*glm::sin(angle), 1.0f);
+
+		skeleton_vertices.push_back(start_joint);
+		skeleton_vertices.push_back(end_joint);
+	}
+}
+
+void Bone::generateAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float length)
+{
+	glm::vec4 origin = TRs * T * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 y_coord = TRs * T * R * glm::vec4(0.0f, 5.0f, 0.0f, 1.0f);
+	glm::vec4 z_coord = TRs * T * R * glm::vec4(0.0f, 0.0f, 5.0f, 1.0f);
+
+	skeleton_vertices.push_back(origin);
+	skeleton_vertices.push_back(y_coord);
+	skeleton_vertices.push_back(origin);
+	skeleton_vertices.push_back(z_coord);
+}
+
+void Bone::generateNormalAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float length)
+{
+	glm::vec4 origin = TRs * T * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 y_coord = TRs * T * R * glm::vec4(0.0f, length, 0.0f, 1.0f);
+
+	skeleton_vertices.push_back(origin);
+	skeleton_vertices.push_back(y_coord);
+}
+
+void Bone::generateBinormalAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float length)
+{
+	glm::vec4 origin = TRs * T * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 z_coord = TRs * T * R * glm::vec4(0.0f, 0.0f, length, 1.0f);
+
+	skeleton_vertices.push_back(origin);
+	skeleton_vertices.push_back(z_coord);
+}
+
 void Bone::addJointVertices(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, std::string depth)
 {
 	if(jid != 0)
@@ -331,32 +416,32 @@ void Bone::addJointVertices(std::vector<glm::vec4>& skeleton_vertices, glm::mat4
 
 }
 
-void Bone::addBone(int _jid, glm::vec3 offset, glm::mat4& Rs)
+void Bone::addBone(int _jid, glm::vec3 offset)
 {
 	// std::cout << "Parent bone jid: " << (this)->jid << "\n";
-	bone_children.push_back(new Bone(_jid, offset, this, Rs));
+	bone_children.push_back(new Bone(_jid, offset, this));
 }
 
-Bone* Bone::findBone(int _jid, glm::mat4& Rs)
+Bone* Bone::findBone(int _jid, glm::mat4& TRs)
 {
-	//std::cout << "Searching... " << _jid << "My jid:" << jid << "\n";
 	if(jid == _jid)
 	{
-		//std::cout << "Found!\n";
 		return (this);
 	}
 
-	//glm::mat4 Rstart = Rs;
+	glm::mat4 TRstart = TRs;
+	TRs = TRstart * T * R;
 
 	typedef std::vector<Bone*>::const_iterator iter;
 	for(iter i = bone_children.begin(); i != bone_children.end(); ++i) 
 	{
 		Bone* bone_child = (*i);
-		//Rs = Rstart * bone_child->R;
-		Bone* search_bone = bone_child->findBone(_jid, Rs);
+		Bone* search_bone = bone_child->findBone(_jid, TRs);
 		if(search_bone != NULL)
 			return search_bone;
 	}
+
+	TRs = TRstart;
 
 	return NULL;
 }
@@ -380,11 +465,8 @@ int Bone::smallest_mag(glm::vec3 my_vector)
 
 // Generate bones from a joint end and find the joint start from the parent
 // For the imaginary root bone (from origin to 1st start point of real root), the joint start is the origin
-Bone::Bone(int _jid, glm::vec3& offset, Bone* parent, glm::mat4 Rs)
+Bone::Bone(int _jid, glm::vec3& offset, Bone* parent)
 {
-	// std::cout << "Bone constructor\n";
-	// std::cout << "Parent is null: " << (parent == NULL) << "\n";
-
 	// Set parent
 	if(parent != NULL)
 		parent_bone = parent;
@@ -413,14 +495,10 @@ Bone::Bone(int _jid, glm::vec3& offset, Bone* parent, glm::mat4 Rs)
 	glm::vec3 v(0.0f, 0.0f, 0.0f);
 	int axis = smallest_mag(t);
 	v[axis] = 1.0f;
-	n = glm::normalize(glm::cross(t,v));
+	n = glm::normalize(glm::cross(t, v));
 
 		// b-axis
 	b = glm::normalize(glm::cross(t, n));
-
-	// print_vec(bone_vector, "bone vector");
-	// print_vec(t, "t");
-	// print_vec(Length*t, "Bone replication");
 
 	// Generate axis matrix
 	Axis = glm::mat4(1.0f);
@@ -435,12 +513,9 @@ Bone::Bone(int _jid, glm::vec3& offset, Bone* parent, glm::mat4 Rs)
 	// Generate T (relative to parent axis)
 	T = glm::mat4(1.0f);
 
-	//std::cout << "\tPart II: T\n";
-
 	// If we're based on world coordinates, the offset is the offset of the 1st joint
 	if(parent != NULL)
 	{
-		//std::cout << "\tTime to crash?\n";
 		if(parent->jid == 0)
 		{
 			T[3].x = parent->end_joint.x;
@@ -453,43 +528,14 @@ Bone::Bone(int _jid, glm::vec3& offset, Bone* parent, glm::mat4 Rs)
 			T[3].y = 0.0f;
 			T[3].z = 0.0f;
 		}
-		//std::cout << "\tNah\n";
 	}
 
-	//std::cout << "\tPart III: N\n";
 	// Generate R which is R = (Rs)-1*Axis
 	R = glm::mat4(1.0f);
 	if(parent != NULL)
 	{
-		///std::cout << "\tTime to crash?\n";
 		R = glm::inverse(parent->Axis)*Axis;
-		//std::cout << "\tNah\n";
 	}
-
-	// Add bone to bone children of the parent
-	// if(parent != NULL)
-	// {
-	// 	parent->bone_children.push_back(this);
-	// }
-
-	// std::cout << "\tBone constructed jid " << (this)->jid << "\n";
-	// std::cout << "\tT matrix\n";
-	// print_matrix(T);
-	// std::cout << "\tR matrix\n";
-	// print_matrix(R);
-	// std::cout << "\tAxis matrix\n";
-	// print_matrix(Axis);
-	// std::cout << "\t R*Rlocal == Axis?" << "\n";
-	// print_matrix(Rs*R);
-
-	// if(parent != NULL)
-	// {
-	// 	glm::vec4 start_joint = T * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	// 	glm::vec4 end_joint = T * R * glm::vec4(Length, 0.0f, 0.0f, 1.0f);
-	// 	print_vec(start_joint, "\tstart_joint");
-	// 	print_vec(end_joint, "\tend_joint");
-	// }
-
 
 }
 
@@ -501,6 +547,18 @@ Bone::~Bone()
 	{
 		delete (*i);
 	}
+}
+
+void Bone::boneScan()
+{
+	std::cout << "Bone: " << jid << "\n";
+	std::cout << "Bone length: " << Length << "\n";
+	std::cout << "T Matrix:\n";
+	print_matrix(T);
+	std::cout << "R Matrix:\n";
+	print_matrix(R);
+	std::cout << "Axis Matrix:\n";
+	print_matrix(Axis);
 }
 
 // FIXME: Implement bone animation.
@@ -535,44 +593,32 @@ void Mesh::loadpmd(const std::string& fn)
 	mr.getJoint(0, offset, parent);
 	skeleton.addRootBone(offset);
 
-	//std::cout << "Bone root jid: " << skeleton.bone_root->getJid() << "\n";
-
 	int i = 1;
-
-	//mr.getJoint(i, offset, parent);
-	//skeleton.addBone(i++, offset, parent);
 
 	// Use the information obtained from getJoint to add a bone
 	
 	while(mr.getJoint(i, offset, parent))
 		skeleton.addBone(i++, offset, parent);
 
-	// for(i = 1; i < 6; ++i)
-	// {
-	// 	mr.getJoint(i, offset, parent);
-	// 	skeleton.addBone(i, offset, parent);
-	// }
-
-	// std::cout << "\n\n";
-
 	skeleton.generateVertices();
+
 	skeleton.initCylinderVertices();
+	skeleton.initNormalVertices();
+	skeleton.initBinormalVertices();
+
+	// New way to draw bones as test
+	//skeleton.getVerticesVector().clear();
+
+	i = 1;
+	//while(mr.getJoint(i, offset, parent))
+	//{	
+		glm::mat4 TRs = glm::mat4(1.0f);
+		Bone* reference_bone = skeleton.getBoneRoot()->findBone(TEST_BONE, TRs);
+		reference_bone->generateCylinderLinesRaw(testVertices, BONE_RADIUS);
+		//reference_bone->generateCylinderLinesRaw(skeleton.getCylinderVerticesVector(), BONE_RADIUS);
+	//}
+
 	isDirty = true;
-
-	// for(i = 0; i < 6; ++i)
-	// {
-	// 	mr.getJoint(i, offset, parent);
-	// 	std::cout << "Bone jid: " << i << " parent id: " << parent << "\n";
-	// 	print_vec(offset, "\tJoint offset");
-	// }
-
-	// std::cout << "\n\nProduced vertices:\n";
-	// typedef std::vector<glm::vec4>::const_iterator iter;
-	// for(iter i = skeleton.getVertices().begin(); i != skeleton.getVertices().end(); ++i) 
-	// {
-	// 	glm::vec4 vertex = (*i);
-	// 	print_vec(vertex, "vertex x");
-	// }
 }
 
 void Mesh::updateAnimation()

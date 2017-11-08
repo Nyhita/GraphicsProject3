@@ -55,6 +55,14 @@ const char* cylinder_fragment_shader =
 #include "shaders/cylinder.frag"
 ;
 
+const char* normal_fragment_shader =
+#include "shaders/normal.frag"
+;
+
+const char* binormal_fragment_shader =
+#include "shaders/binormal.frag"
+;
+
 void ErrorCallback(int error, const char* description) {
 	std::cerr << "GLFW Error: " << description << "\n";
 }
@@ -235,6 +243,33 @@ int main(int argc, char* argv[])
 			{ "fragment_color" }
 			);
 
+	RenderDataInput test_pass_input;
+	test_pass_input.assign(0, "vertex_position", mesh.testVertices.data(), mesh.testVertices.size(), 4, GL_FLOAT);
+	RenderPass test_pass(-1,
+			test_pass_input,
+			{ bone_vertex_shader, bone_geometry_shader, cylinder_fragment_shader},
+			{ std_model, std_view, std_proj, std_light },
+			{ "fragment_color" }
+			);
+
+	RenderDataInput normal_pass_input;
+	normal_pass_input.assign(0, "vertex_position", mesh.skeleton.getNormalVertices().data(), mesh.skeleton.getNormalVertices().size(), 4, GL_FLOAT);
+	RenderPass normal_pass(-1,
+			normal_pass_input,
+			{ bone_vertex_shader, bone_geometry_shader, normal_fragment_shader},
+			{ std_model, std_view, std_proj, std_light },
+			{ "fragment_color" }
+			);
+
+	RenderDataInput binormal_pass_input;
+	binormal_pass_input.assign(0, "vertex_position", mesh.skeleton.getBinormalVertices().data(), mesh.skeleton.getBinormalVertices().size(), 4, GL_FLOAT);
+	RenderPass binormal_pass(-1,
+			binormal_pass_input,
+			{ bone_vertex_shader, bone_geometry_shader, binormal_fragment_shader},
+			{ std_model, std_view, std_proj, std_light },
+			{ "fragment_color" }
+			);
+
 	RenderDataInput floor_pass_input;
 	floor_pass_input.assign(0, "vertex_position", floor_vertices.data(), floor_vertices.size(), 4, GL_FLOAT);
 	floor_pass_input.assign_index(floor_faces.data(), floor_faces.size(), 3);
@@ -303,6 +338,31 @@ int main(int argc, char* argv[])
 			cylinder_pass.setup();
 
 			CHECK_GL_ERROR(glDrawArrays(GL_LINES, 0, mesh.skeleton.getCylinderVertices().size() * 2));
+
+			test_pass.updateVBO(0,
+							  mesh.testVertices.data(),
+							  mesh.testVertices.size());	
+
+			test_pass.setup();
+
+			CHECK_GL_ERROR(glDrawArrays(GL_LINES, 0, mesh.testVertices.size() * 2));	
+
+			normal_pass.updateVBO(0,
+							  mesh.skeleton.getNormalVertices().data(),
+							  mesh.skeleton.getNormalVertices().size());	
+
+			normal_pass.setup();
+
+			CHECK_GL_ERROR(glDrawArrays(GL_LINES, 0, mesh.skeleton.getBinormalVertices().size() * 2));	
+
+			binormal_pass.updateVBO(0,
+							  mesh.skeleton.getBinormalVertices().data(),
+							  mesh.skeleton.getBinormalVertices().size());	
+
+			binormal_pass.setup();
+
+			CHECK_GL_ERROR(glDrawArrays(GL_LINES, 0, mesh.skeleton.getBinormalVertices().size() * 2));	
+				
 		}
 
 		// Then draw floor.

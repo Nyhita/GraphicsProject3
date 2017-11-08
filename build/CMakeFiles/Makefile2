@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning
+CMAKE_SOURCE_DIR = /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build
+CMAKE_BINARY_DIR = /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build
 
 #=============================================================================
 # Target rules for target CMakeFiles/utgraphicsutil.dir
@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning
 CMakeFiles/utgraphicsutil.dir/all:
 	$(MAKE) -f CMakeFiles/utgraphicsutil.dir/build.make CMakeFiles/utgraphicsutil.dir/depend
 	$(MAKE) -f CMakeFiles/utgraphicsutil.dir/build.make CMakeFiles/utgraphicsutil.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles --progress-num=7,8,9,10,11 "Built target utgraphicsutil"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build/CMakeFiles --progress-num=7,8,9,10,11 "Built target utgraphicsutil"
 .PHONY : CMakeFiles/utgraphicsutil.dir/all
 
 # Include target in all.
@@ -76,9 +76,9 @@ all: CMakeFiles/utgraphicsutil.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/utgraphicsutil.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/utgraphicsutil.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build/CMakeFiles 0
 .PHONY : CMakeFiles/utgraphicsutil.dir/rule
 
 # Convenience name for target.
@@ -121,7 +121,7 @@ src/preinstall:
 src/CMakeFiles/skinning.dir/all: CMakeFiles/utgraphicsutil.dir/all
 	$(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/depend
 	$(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target skinning"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target skinning"
 .PHONY : src/CMakeFiles/skinning.dir/all
 
 # Include target in all.
@@ -131,9 +131,9 @@ all: src/CMakeFiles/skinning.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/skinning.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles 11
+	$(CMAKE_COMMAND) -E cmake_progress_start /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build/CMakeFiles 11
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/skinning.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/skinning.dir/rule
 
 # Convenience name for target.

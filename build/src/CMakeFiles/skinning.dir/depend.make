@@ -30,6 +30,7 @@ src/CMakeFiles/skinning.dir/main.cc.o: ../src/gui.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/main.cc
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/procedure_geometry.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/render_pass.h
+src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/binormal.frag
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/bone.frag
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/bone.geom
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/bone.vert
@@ -38,6 +39,7 @@ src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/default.frag
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/default.geom
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/default.vert
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/floor.frag
+src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/normal.frag
 
 src/CMakeFiles/skinning.dir/procedure_geometry.cc.o: ../lib/image.h
 src/CMakeFiles/skinning.dir/procedure_geometry.cc.o: ../lib/material.h

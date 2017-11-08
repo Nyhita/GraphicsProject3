@@ -1,4 +1,4 @@
-# Install script for directory: /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/skinning/src
+# Install script for directory: /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

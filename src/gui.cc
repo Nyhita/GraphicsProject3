@@ -236,7 +236,7 @@ void GUI::setRay(Ray& ray, double mouse_x, double mouse_y)
 
 	ray.p = eye_;
 
-	float z_val = -1.0f;
+	float z_val = -100.0f;
 	float y_val = z_val * glm::tan((float)(kFov/2 * (M_PI / 180.0f)));
 	float x_val = aspect_ * y_val;
 
@@ -251,8 +251,8 @@ void GUI::setRay(Ray& ray, double mouse_x, double mouse_y)
 
 	glm::vec3 q = ray.p + 31.0f * ray.v;
 
-	mesh_->skeleton.getVerticesVector()[mesh_->skeleton.getVerticesVector().size()-2] = glm::vec4(ray.p.x + 0.01f*xAxis.x, ray.p.y + 0.01f*xAxis.y, ray.p.z + 0.01f*xAxis.z, 1.0f);
-	mesh_->skeleton.getVerticesVector()[mesh_->skeleton.getVerticesVector().size()-1] = glm::vec4(q.x, q.y, q.z, 1.0f);
+	// mesh_->skeleton.getVerticesVector()[mesh_->skeleton.getVerticesVector().size()-2] = glm::vec4(ray.p.x + 0.01f*xAxis.x, ray.p.y + 0.01f*xAxis.y, ray.p.z + 0.01f*xAxis.z, 1.0f);
+	// mesh_->skeleton.getVerticesVector()[mesh_->skeleton.getVerticesVector().size()-1] = glm::vec4(q.x, q.y, q.z, 1.0f);
 }
 
 void GUI::highlightBones(const Ray& ray)
