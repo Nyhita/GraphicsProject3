@@ -92,7 +92,7 @@ void Skeleton::initVertices(std::vector<glm::vec4>& vertices, int size)
 
 void Skeleton::initCylinderVertices()
 {
-	initVertices(cylinder_vertices, BONE_LINE_COUNT*2);;
+	initVertices(cylinder_vertices, BONE_LINE_COUNT*2 + (BONE_LINE_COUNT-1)*2);;
 }
 
 void Skeleton::initNormalVertices()
@@ -555,6 +555,11 @@ void Bone::generateCylinderLines(std::vector<glm::vec4>& skeleton_vertices, glm:
 {
 	//float radius = 0.1f;
 	float angle;
+	glm::vec4 prev_start_joint;
+	glm::vec4 prev_end_joint;
+
+	bool start = true;
+
 	for(angle = 0.0f; angle < (2.0f*M_PI); angle += 2.0f*M_PI/BONE_LINE_COUNT)
 	{
 		glm::vec4 start_joint = TSs * T * S * glm::vec4(0.0f, radius*glm::cos(angle), radius*glm::sin(angle), 1.0f);
@@ -562,6 +567,21 @@ void Bone::generateCylinderLines(std::vector<glm::vec4>& skeleton_vertices, glm:
 
 		skeleton_vertices.push_back(start_joint);
 		skeleton_vertices.push_back(end_joint);
+
+		if(start)
+		{
+			start = false;
+		} 
+		else
+		{
+			skeleton_vertices.push_back(prev_start_joint);
+			skeleton_vertices.push_back(start_joint);
+			skeleton_vertices.push_back(prev_end_joint);
+			skeleton_vertices.push_back(end_joint);
+		}
+
+		prev_start_joint = start_joint;
+		prev_end_joint = end_joint;
 	}
 }
 

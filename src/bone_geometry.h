@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <mmdadapter.h>
 
-#define BONE_LINE_COUNT 48.0f
+#define BONE_LINE_COUNT 24.0f
 #define BONE_RADIUS 0.1f
 #define HIGHLIGHT_RADIUS 0.2f
 #define AXIS_LENGTH 2.0f
