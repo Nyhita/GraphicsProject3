@@ -143,7 +143,7 @@ void Skeleton::highlightBones(const Ray& ray)
 	Bone* highlight_bone = NULL;
 	glm::mat4 TRs(1.0f);
 
-	bone_root->findBoneIntersect(ray, highlight_bone, t, glm::mat4(1.0f), TRs, skeleton_vertices);
+	bone_root->findBoneIntersect(ray, highlight_bone, t, glm::mat4(1.0f), TRs);
 	std::cout << "highlight_bone is NULL" << (highlight_bone == NULL) << "\n";
 
 	if(highlight_bone != NULL)
@@ -208,7 +208,7 @@ void Bone::createLocalRay(Ray& localRay, const Ray& ray, glm::mat4 TRS)
 	localRay.v = glm::vec3(localRay_v4.x, localRay_v4.y, localRay_v4.z);
 }
 
-void Bone::intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs, std::vector<glm::vec4>& skeleton_vertices)
+void Bone::intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs)
 {
 	// Convert ray to local coordinates
 	Ray localRay;
@@ -309,15 +309,125 @@ void Bone::intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, gl
 	//std::cout << "14\n";
 }
 
-void Bone::findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs, std::vector<glm::vec4>& skeleton_vertices)
+void Bone::intersectRay2(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs)
+{
+	glm::vec4 t4 = Axis[0];
+	glm::vec4 n4 = Axis[1];
+	glm::vec4 b4 = Axis[2];
+	glm::vec4 O4 = TRS * T * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	float L = Length;
+	
+	glm::vec3 t_axis(t4.x, t4.y, t4.z);
+	glm::vec3 n(n4.x, n4.y, n4.z);
+	glm::vec3 b(b4.x, b4.y, b4.z);
+
+	glm::vec3 O(O4.x, O4.y, O4.z);
+	glm::vec3 p = ray.p;
+	glm::vec3 v = ray.v;
+	float R = BONE_RADIUS;
+
+	// ====================================================================================================
+
+	float tx0 = 0.0f;
+	float tx1 = 0.0f;
+	float tyz0 = 0.0f;
+	float tyz1 = 0.0f;
+	
+	float vot = glm::dot(v,t_axis);
+
+	if(vot == 0.0f)
+		return;
+	
+	//
+	tx0 = (L + glm::dot(O,t_axis) - glm::dot(p,t_axis)) / vot;
+	tx1 = (glm::dot(O,t_axis) - glm::dot(p,t_axis)) / vot;
+
+	//std::cout << "6\n";
+
+	//
+	float a = glm::dot(v,n)*glm::dot(v,n) + glm::dot(v,b)*glm::dot(v,b);
+	
+	// 
+	float b2 = 2.0f*((glm::dot(p,n) - glm::dot(O,n))*(glm::dot(v,n))) + 2.0f*((glm::dot(p,b) - glm::dot(O,b))*(glm::dot(v,b)));
+
+	// 
+	float c = (glm::dot(p,n) - glm::dot(O,n))*(glm::dot(p,n) - glm::dot(O,n)) + (glm::dot(p,b) - glm::dot(O,b))*(glm::dot(p,b) - glm::dot(O,b)) - (R)*(R);
+
+	//std::cout << "7\n";
+
+	// Solve the equation y^2 + z^2 <= r^2 and find the range of t
+	// Equation is also (ray.y^2 + ray.z^2 <= r^2)
+	if(!quadraticFormula(a, b2, c, tyz0, tyz1))
+		return;
+	//std::cout << "8\n";
+
+	float tx_s = std::min(tx0, tx1);
+	float tx_e = std::max(tx0, tx1);
+
+	float tyz_s = std::min(tyz0, tyz1);
+	float tyz_e = std::max(tyz0, tyz1);
+
+	//std::cout << "9\n";
+
+	if(tx_e < 0.0f || tyz_e < 0.0f)
+		return;
+
+	//std::cout << "10\n";
+
+	tx_s = std::max(tx_s, 0.0f);
+	tyz_s = std::max(tyz_s, 0.0f);
+
+	float t1_start = 0.0f;
+	float t1_end = 0.0f;
+	float t2_start = 0.0f;
+	float t2_end = 0.0f;
+
+	//std::cout << "11\n";
+
+	if(tx_s < tyz_s)
+	{
+		t1_start = tx_s;
+		t1_end = tx_e;
+
+		t2_start = tyz_s;
+		t2_end = tyz_e;
+	} 
+	else 
+	{
+		t1_start = tyz_s;
+		t1_end = tyz_e;
+
+		t2_start = tx_s;
+		t2_end = tx_e;
+	}
+
+	//std::cout << "12\n";
+
+	// If there's no t that's in between both ranges to satisfy, return
+	if(t2_start > t1_end)
+		return;
+
+	std::cout << "13: " << "t2_start" << t2_start << " t: " << t << "\n";
+
+	// t2_start is now the t_start
+	if(t2_start < t)
+	{
+		std::cout << "we in der" << "\n";
+		t = t2_start;
+		bone = (this);
+		TRs = TRS;
+		std::cout << "bone is NULL? " << (bone == NULL) << "\n";
+	}
+
+	//std::cout << "14\n";
+}
+
+void Bone::findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs)
 {
 	if(jid != 0)
 	{
-		intersectRay(ray, bone, t, TRS, TRs, skeleton_vertices);
-		//if(bone != NULL)
-		//{
-		//	std::cout << "Bone isn't null\n";
-		//}
+		intersectRay2(ray, bone, t, TRS, TRs);
 	}
 
 	glm::mat4 new_TR = TRS * T * R;
@@ -326,7 +436,7 @@ void Bone::findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TR
 	for(iter i = bone_children.begin(); i != bone_children.end(); ++i) 
 	{
 		Bone* bone_child = (*i);
-		bone_child->findBoneIntersect(ray, bone, t, new_TR, TRs, skeleton_vertices);
+		bone_child->findBoneIntersect(ray, bone, t, new_TR, TRs);
 	}	
 }
 

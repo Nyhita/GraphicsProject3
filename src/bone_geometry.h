@@ -59,8 +59,9 @@ public:
 	void generateNormalAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float length);
 	void generateBinormalAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float length);
 
-	void findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs, std::vector<glm::vec4>& skeleton_vertices);
-	void intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs, std::vector<glm::vec4>& skeleton_vertices);
+	void findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs);
+	void intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs);
+	void intersectRay2(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs);
 
 	void createLocalRay(Ray& localRay, const Ray& ray, glm::mat4 TRS);
 	void generateBoneTRs(glm::mat4& TRs);
