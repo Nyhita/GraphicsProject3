@@ -63,8 +63,6 @@ void Skeleton::generateVertices()
 {
 	skeleton_vertices.clear();
 	bone_root->addJointVertices(skeleton_vertices, glm::mat4(1.0f), "\t");
-	skeleton_vertices.push_back(glm::vec4(4.0f,8.0f,-1.0f,1.0f));
-	skeleton_vertices.push_back(glm::vec4(6.0f,8.0f,-1.0f,1.0f));
 }
 
 void Skeleton::addBone(int _jid, glm::vec3 offset, int parent)
@@ -132,27 +130,14 @@ void Skeleton::highlightBones(const Ray& ray, Bone*& highlight_bone)
 	normal_vertices.clear();
 	binormal_vertices.clear();
 
-	glm::mat4 Trs = glm::mat4(1.0f);
-	Bone* reference_bone = bone_root->findBone(TEST_BONE, Trs);
-	Ray localRay;
-	reference_bone->createLocalRay(localRay, ray, Trs);
-	glm::vec3 q = localRay.p + 100000.0f * localRay.v;
-	skeleton_vertices[skeleton_vertices.size()-2] = glm::vec4(localRay.p.x, localRay.p.y, localRay.p.z, 1.0f);
-	skeleton_vertices[skeleton_vertices.size()-1] = glm::vec4(q.x, q.y, q.z, 1.0f);
-
 	float t = std::numeric_limits<float>::max();
-	//Bone* highlight_bone = NULL;
 	glm::mat4 TSs(1.0f);
 
 	bone_root->findBoneIntersect(ray, highlight_bone, t, glm::mat4(1.0f), TSs);
-	std::cout << "highlight_bone is NULL" << (highlight_bone == NULL) << "\n";
 
 	if(highlight_bone != NULL)
 	{
-		std::cout << "bone found: " << highlight_bone->getJid() << "\n";
-		highlight_bone->boneScan();
 		highlight_bone->generateCylinderLines(cylinder_vertices, TSs, HIGHLIGHT_RADIUS);
-		//highlight_bone->generateAxis(cylinder_vertices, TSs, HIGHLIGHT_RADIUS);
 		highlight_bone->generateNormalAxis(normal_vertices, TSs, AXIS_LENGTH);
 		highlight_bone->generateBinormalAxis(binormal_vertices, TSs, AXIS_LENGTH);
 	}
@@ -292,126 +277,7 @@ void Bone::generateBoneTSs(glm::mat4& TSs)
 		parent_bone->generateBoneTSs(TSs);
 }
 
-void Bone::createLocalRay(Ray& localRay, const Ray& ray, glm::mat4 TSS)
-{
-	glm::vec3 q = ray.p + ray.v;
-
-	glm::vec4 ray_p4 = glm::vec4(ray.p.x, ray.p.y, ray.p.z, 1.0f);
-	//glm::vec4 ray_v4 = glm::vec4(ray.v.x, ray.v.y, ray.v.z, 1.0f);
-	glm::vec4 ray_q4 = glm::vec4(q.x, q.y, q.z, 1.0f);
-
-	glm::vec4 localRay_p4 = glm::inverse(TSS * T) * ray_p4;
-	glm::vec4 localRay_q4 = glm::inverse(TSS * T) * ray_q4;
-	
-	//glm::vec4 localRay_v4 = glm::inverse(Axis) * ray_v4;
-	glm::vec4 localRay_v4 = localRay_q4 - localRay_p4;
-
-	localRay.p = glm::vec3(localRay_p4.x, localRay_p4.y, localRay_p4.z);
-	localRay.v = glm::vec3(localRay_v4.x, localRay_v4.y, localRay_v4.z);
-}
-
 void Bone::intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs)
-{
-	// Convert ray to local coordinates
-	Ray localRay;
-
-	createLocalRay(localRay, ray, TSS);
-
-	float tx0 = 0.0f;
-	float tx1 = 0.0f;
-	float tyz0 = 0.0f;
-	float tyz1 = 0.0f;
-
-	if(localRay.v.x == 0.0f)
-		return;
-
-	//std::cout << "5\n";
-	
-	// Solve equation 0 <= ray.x <= L or 0 <= r.p.x + t*r.v.x <= L
-	tx0 = -1.0f * (localRay.p.x / localRay.v.x);
-	tx1 = (Length - localRay.p.x) / localRay.v.x;
-
-	//std::cout << "6\n";
-
-	// d.y^2 + d.z^2 or (ray.v.y)^2 + (ray.v.z)^2
-	float a = (localRay.v.y)*(localRay.v.y) + (localRay.v.z)*(localRay.v.z);
-	
-	// 2*p.y*d.y + 2*p.z*d.z or 2*ray.p.y*ray.v.y + 2*ray.p.z*ray.v.z
-	float b = 2.0f*localRay.p.y*localRay.v.y + 2.0f*localRay.p.z*localRay.v.z;
-
-	// p.y^2 + p.z^2 - R^2 or ray.p.y^2 + ray.p.z^2 - BONE_RADIUS^2
-	float c = (localRay.p.y)*(localRay.p.y) + (localRay.p.z)*(localRay.p.z) - (BONE_RADIUS)*(BONE_RADIUS);
-
-	//std::cout << "7\n";
-
-	// Solve the equation y^2 + z^2 <= r^2 and find the range of t
-	// Equation is also (ray.y^2 + ray.z^2 <= r^2)
-	if(!quadraticFormula(a, b, c, tyz0, tyz1))
-		return;
-	//std::cout << "8\n";
-
-	float tx_s = std::min(tx0, tx1);
-	float tx_e = std::max(tx0, tx1);
-
-	float tyz_s = std::min(tyz0, tyz1);
-	float tyz_e = std::max(tyz0, tyz1);
-
-	//std::cout << "9\n";
-
-	if(tx_e < 0.0f || tyz_e < 0.0f)
-		return;
-
-	//std::cout << "10\n";
-
-	tx_s = std::max(tx_s, 0.0f);
-	tyz_s = std::max(tyz_s, 0.0f);
-
-	float t1_start = 0.0f;
-	float t1_end = 0.0f;
-	float t2_start = 0.0f;
-	float t2_end = 0.0f;
-
-	//std::cout << "11\n";
-
-	if(tx_s < tyz_s)
-	{
-		t1_start = tx_s;
-		t1_end = tx_e;
-
-		t2_start = tyz_s;
-		t2_end = tyz_e;
-	} 
-	else 
-	{
-		t1_start = tyz_s;
-		t1_end = tyz_e;
-
-		t2_start = tx_s;
-		t2_end = tx_e;
-	}
-
-	//std::cout << "12\n";
-
-	// If there's no t that's in between both ranges to satisfy, return
-	if(t2_start > t1_end)
-		return;
-
-	std::cout << "13: " << "t2_start" << t2_start << " t: " << t << "\n";
-
-	// t2_start is now the t_start
-	if(t2_start < t)
-	{
-		std::cout << "we in der" << "\n";
-		t = t2_start;
-		bone = (this);
-		TSs = TSS;
-		std::cout << "bone is NULL? " << (bone == NULL) << "\n";
-	}
-
-	//std::cout << "14\n";
-}
-
-void Bone::intersectRay2(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs)
 {
 	glm::vec4 t4 = Axis[0];
 	glm::vec4 n4 = Axis[1];
@@ -444,8 +310,6 @@ void Bone::intersectRay2(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, g
 	//
 	tx0 = (L + glm::dot(O,t_axis) - glm::dot(p,t_axis)) / vot;
 	tx1 = (glm::dot(O,t_axis) - glm::dot(p,t_axis)) / vot;
-
-	//std::cout << "6\n";
 
 	//
 	float a = glm::dot(v,n)*glm::dot(v,n) + glm::dot(v,b)*glm::dot(v,b);
@@ -510,26 +374,20 @@ void Bone::intersectRay2(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, g
 	if(t2_start > t1_end)
 		return;
 
-	std::cout << "13: " << "t2_start" << t2_start << " t: " << t << "\n";
-
 	// t2_start is now the t_start
 	if(t2_start < t)
 	{
-		std::cout << "we in der" << "\n";
 		t = t2_start;
 		bone = (this);
 		TSs = TSS;
-		std::cout << "bone is NULL? " << (bone == NULL) << "\n";
 	}
-
-	//std::cout << "14\n";
 }
 
 void Bone::findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs)
 {
 	if(jid != 0)
 	{
-		intersectRay2(ray, bone, t, TSS, TSs);
+		intersectRay(ray, bone, t, TSS, TSs);
 	}
 
 	glm::mat4 new_TS = TSS * T * S;
@@ -837,18 +695,6 @@ void Mesh::loadpmd(const std::string& fn)
 	skeleton.initCylinderVertices();
 	skeleton.initNormalVertices();
 	skeleton.initBinormalVertices();
-
-	// New way to draw bones as test
-	//skeleton.getVerticesVector().clear();
-
-	i = 1;
-	//while(mr.getJoint(i, offset, parent))
-	//{	
-		glm::mat4 TSs = glm::mat4(1.0f);
-		Bone* reference_bone = skeleton.getBoneRoot()->findBone(TEST_BONE, TSs);
-		reference_bone->generateCylinderLinesRaw(testVertices, BONE_RADIUS);
-		//reference_bone->generateCylinderLinesRaw(skeleton.getCylinderVerticesVector(), BONE_RADIUS);
-	//}
 
 	isDirty = true;
 }

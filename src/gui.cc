@@ -111,7 +111,6 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
 	bool drag_camera = drag_state_ && current_button_ == GLFW_MOUSE_BUTTON_RIGHT;
 	bool drag_bone = drag_state_ && current_button_ == GLFW_MOUSE_BUTTON_LEFT;
 
-	std::cout << mouse_x << " " << mouse_y << "\n";
 	Ray mouse_ray;	
 
 	setRay(mouse_ray, mouse_x, mouse_y);
@@ -285,11 +284,6 @@ void GUI::setRay(Ray& ray, double mouse_x, double mouse_y)
 	glm::vec3 yAxis = glm::normalize(glm::cross(xAxis, zAxis));
 
 	ray.v = n_x * x_val * xAxis + n_y * y_val * yAxis + z_val * zAxis;
-
-	glm::vec3 q = ray.p + 31.0f * ray.v;
-
-	// mesh_->skeleton.getVerticesVector()[mesh_->skeleton.getVerticesVector().size()-2] = glm::vec4(ray.p.x + 0.01f*xAxis.x, ray.p.y + 0.01f*xAxis.y, ray.p.z + 0.01f*xAxis.z, 1.0f);
-	// mesh_->skeleton.getVerticesVector()[mesh_->skeleton.getVerticesVector().size()-1] = glm::vec4(q.x, q.y, q.z, 1.0f);
 }
 
 void GUI::highlightBones(const Ray& ray, Bone*& bone)

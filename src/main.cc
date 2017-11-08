@@ -243,15 +243,6 @@ int main(int argc, char* argv[])
 			{ "fragment_color" }
 			);
 
-	RenderDataInput test_pass_input;
-	test_pass_input.assign(0, "vertex_position", mesh.testVertices.data(), mesh.testVertices.size(), 4, GL_FLOAT);
-	RenderPass test_pass(-1,
-			test_pass_input,
-			{ bone_vertex_shader, bone_geometry_shader, cylinder_fragment_shader},
-			{ std_model, std_view, std_proj, std_light },
-			{ "fragment_color" }
-			);
-
 	RenderDataInput normal_pass_input;
 	normal_pass_input.assign(0, "vertex_position", mesh.skeleton.getNormalVertices().data(), mesh.skeleton.getNormalVertices().size(), 4, GL_FLOAT);
 	RenderPass normal_pass(-1,
@@ -338,14 +329,6 @@ int main(int argc, char* argv[])
 			cylinder_pass.setup();
 
 			CHECK_GL_ERROR(glDrawArrays(GL_LINES, 0, mesh.skeleton.getCylinderVertices().size() * 2));
-
-			test_pass.updateVBO(0,
-							  mesh.testVertices.data(),
-							  mesh.testVertices.size());	
-
-			test_pass.setup();
-
-			CHECK_GL_ERROR(glDrawArrays(GL_LINES, 0, mesh.testVertices.size() * 2));	
 
 			normal_pass.updateVBO(0,
 							  mesh.skeleton.getNormalVertices().data(),

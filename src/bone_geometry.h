@@ -62,9 +62,7 @@ public:
 
 	void findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs);
 	void intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs);
-	void intersectRay2(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs);
 
-	void createLocalRay(Ray& localRay, const Ray& ray, glm::mat4 TSS);
 	void generateBoneTSs(glm::mat4& TSs);
 
 	void boneScan();
@@ -130,8 +128,6 @@ struct Mesh {
 	std::vector<glm::vec4> face_normals;
 	std::vector<glm::vec2> uv_coordinates;
 	std::vector<Material> materials;
-
-	std::vector<glm::vec4> testVertices;
 
 	BoundingBox bounds;
 	Skeleton skeleton;
