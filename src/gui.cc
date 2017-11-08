@@ -145,6 +145,8 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
 
 		mesh_->skeleton.generateVertices();
 		mesh_->skeleton.regenerateHighlightBone(current_bone_);
+		mesh_->skeleton.regenerateNormalVertices(current_bone_);
+		mesh_->skeleton.regenerateBinormalVertices(current_bone_);
 
 		return ;
 	}
