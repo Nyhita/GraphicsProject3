@@ -557,7 +557,7 @@ void Bone::generateCylinderLines(std::vector<glm::vec4>& skeleton_vertices, glm:
 	float angle;
 	for(angle = 0.0f; angle < (2.0f*M_PI); angle += 2.0f*M_PI/BONE_LINE_COUNT)
 	{
-		glm::vec4 start_joint = TSs * T * glm::vec4(0.0f, radius*glm::cos(angle), radius*glm::sin(angle), 1.0f);
+		glm::vec4 start_joint = TSs * T * S * glm::vec4(0.0f, radius*glm::cos(angle), radius*glm::sin(angle), 1.0f);
 		glm::vec4 end_joint = TSs * T * S * glm::vec4(Length, radius*glm::cos(angle), radius*glm::sin(angle), 1.0f);
 
 		skeleton_vertices.push_back(start_joint);
