@@ -37,6 +37,7 @@ private:
 	glm::mat4 Axis;
 	glm::mat4 T;
 	glm::mat4 R;
+	glm::mat4 S;
 	std::vector<Bone*> bone_children;
 	Bone* parent_bone;
 
@@ -45,28 +46,32 @@ private:
 public:
 	Bone(int _jid, glm::vec3& offset, Bone* parent);
 	~Bone();
-	Bone* findBone(int _jid, glm::mat4& TRs);
+	Bone* findBone(int _jid, glm::mat4& TSs);
 	void addBone(int _jid, glm::vec3 offset);
 	int getJid() {return jid;}
 	bool hasParent() {return (parent_bone != NULL);}
 	
-	void addJointVertices(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, std::string depth);
+	void addJointVertices(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TSs, std::string depth);
 	
-	void generateLine(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs);
-	void generateCylinderLines(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float radius);
+	void generateLine(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TSs);
+	void generateCylinderLines(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TSs, float radius);
 	void generateCylinderLinesRaw(std::vector<glm::vec4>& skeleton_vertices, float radius);
-	void generateAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float length);
-	void generateNormalAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float length);
-	void generateBinormalAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TRs, float length);
+	void generateAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TSs, float length);
+	void generateNormalAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TSs, float length);
+	void generateBinormalAxis(std::vector<glm::vec4>& skeleton_vertices, glm::mat4 TSs, float length);
 
-	void findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs);
-	void intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs);
-	void intersectRay2(const Ray& ray, Bone*& bone, float& t, glm::mat4 TRS, glm::mat4& TRs);
+	void findBoneIntersect(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs);
+	void intersectRay(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs);
+	void intersectRay2(const Ray& ray, Bone*& bone, float& t, glm::mat4 TSS, glm::mat4& TSs);
 
-	void createLocalRay(Ray& localRay, const Ray& ray, glm::mat4 TRS);
-	void generateBoneTRs(glm::mat4& TRs);
+	void createLocalRay(Ray& localRay, const Ray& ray, glm::mat4 TSS);
+	void generateBoneTSs(glm::mat4& TSs);
 
 	void boneScan();
+
+	void rotateBone(glm::vec3 rotation_axis, float angle_magnitude);
+	void rollBone(float angle_magnitude);
+	void setChildrenRotation();
 };
 
 struct Joint {
@@ -108,7 +113,11 @@ public:
 	std::vector<glm::vec4>& getCylinderVerticesVector();
 
 	//void findBoneIntersect(const Ray* ray, Bone* bone, float& t);
-	void highlightBones(const Ray& ray);
+	void highlightBones(const Ray& ray, Bone*& highlight_bone);
+
+	void regenerateHighlightBone(Bone* highlight_bone);
+	void regenerateNormalVertices(Bone* highlight_bone);
+	void regenerateBinormalVertices(Bone* highlight_bone);
 };
 
 struct Mesh {

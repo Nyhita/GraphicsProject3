@@ -304,7 +304,7 @@ int main(int argc, char* argv[])
 		gui.updateMatrices();
 		mats = gui.getMatrixPointers();
 
-		int current_bone = gui.getCurrentBone();
+		//int current_bone = gui.getCurrentBone();
 #if 1
 		draw_cylinder = true;
 		//draw_cylinder = (current_bone != -1 && gui.isTransparent());
@@ -330,7 +330,7 @@ int main(int argc, char* argv[])
 			//CHECK_GL_ERROR(glDrawArrays(GL_LINES, 0, mouse_vertices.size() * 2));
 		}
 
-		if(draw_cylinder)
+		if(draw_cylinder && mesh.show)
 		{
 			cylinder_pass.updateVBO(0,
 							  mesh.skeleton.getCylinderVertices().data(),

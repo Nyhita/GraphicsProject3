@@ -55,6 +55,8 @@ void GUI::keyCallback(int key, int scancode, int action, int mods)
 		//FIXME save out a screenshot using SaveJPEG
 	}
 
+	//if(key == GLFW_KEY_M)
+
 	if (captureWASDUPDOWN(key, action))
 		return ;
 	if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) {
@@ -64,16 +66,24 @@ void GUI::keyCallback(int key, int scancode, int action, int mods)
 		else
 			roll_speed = roll_speed_;
 		// FIXME: actually roll the bone here
+		if(current_bone_ != NULL)
+		{
+			current_bone_->rollBone(roll_speed);
+			mesh_->skeleton.generateVertices();
+			mesh_->skeleton.regenerateHighlightBone(current_bone_);
+			mesh_->skeleton.regenerateNormalVertices(current_bone_);
+			mesh_->skeleton.regenerateBinormalVertices(current_bone_);
+		}
 	} else if (key == GLFW_KEY_C && action != GLFW_RELEASE) {
 		fps_mode_ = !fps_mode_;
 	} else if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_RELEASE) {
-		current_bone_--;
-		current_bone_ += mesh_->getNumberOfBones();
-		current_bone_ %= mesh_->getNumberOfBones();
+		//current_bone_--;
+		//current_bone_ += mesh_->getNumberOfBones();
+		//current_bone_ %= mesh_->getNumberOfBones();
 	} else if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_RELEASE) {
-		current_bone_++;
-		current_bone_ += mesh_->getNumberOfBones();
-		current_bone_ %= mesh_->getNumberOfBones();
+		//current_bone_++;
+		//current_bone_ += mesh_->getNumberOfBones();
+		//current_bone_ %= mesh_->getNumberOfBones();
 	} else if (key == GLFW_KEY_T && action != GLFW_RELEASE) {
 		transparent_ = !transparent_;
 		mesh_->show = !mesh_->show;
@@ -90,9 +100,12 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
 	float delta_y = current_y_ - last_y_;
 	if (sqrt(delta_x * delta_x + delta_y * delta_y) < 1e-15)
 		return;
+	
 	glm::vec3 mouse_direction = glm::normalize(glm::vec3(delta_x, delta_y, 0.0f));
 	glm::vec2 mouse_start = glm::vec2(last_x_, last_y_);
 	glm::vec2 mouse_end = glm::vec2(current_x_, current_y_);
+	glm::vec2 mouse_delta = mouse_end - mouse_start;
+
 	glm::uvec4 viewport = glm::uvec4(0, 0, window_width_, window_height_);
 
 	bool drag_camera = drag_state_ && current_button_ == GLFW_MOUSE_BUTTON_RIGHT;
@@ -113,14 +126,36 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
 		tangent_ = glm::column(orientation_, 0);
 		up_ = glm::column(orientation_, 1);
 		look_ = glm::column(orientation_, 2);
-	} else if (drag_bone && current_bone_ != -1) {
+	} else if (drag_bone && current_bone_ != NULL) {
 		// FIXME: Handle bone rotation
+		if(std::abs(mouse_delta.x) <= 0.1f && std::abs(mouse_delta.y) <= 0.1f)
+			return;
+
+		glm::vec3 zAxis = glm::normalize(center_ - eye_);
+		glm::vec3 xAxis = glm::normalize(glm::cross(zAxis, up_));
+		glm::vec3 yAxis = -glm::normalize(glm::cross(xAxis, zAxis));
+
+		float angle_magnitude = rotation_speed_ * glm::length(mouse_delta);
+
+		glm::vec3 mouse_vector = glm::normalize(xAxis*mouse_delta.x + yAxis*mouse_delta.y);
+
+		glm::vec3 rotation_axis = -glm::normalize(glm::cross(mouse_vector, zAxis));
+
+		current_bone_->rotateBone(rotation_axis, angle_magnitude);
+
+		mesh_->skeleton.generateVertices();
+		mesh_->skeleton.regenerateHighlightBone(current_bone_);
+
 		return ;
 	}
 
 	// FIXME: highlight bones that have been moused over
-	highlightBones(mouse_ray);
-	current_bone_ = -1;
+	if(!drag_bone)
+	{
+		Bone* highlight_bone = NULL;
+		highlightBones(mouse_ray, highlight_bone);
+		current_bone_ = highlight_bone;
+	}
 }
 
 void GUI::mouseButtonCallback(int button, int action, int mods)
@@ -155,13 +190,13 @@ MatrixPointers GUI::getMatrixPointers() const
 	return ret;
 }
 
-bool GUI::setCurrentBone(int i)
-{
-	if (i < 0 || i >= mesh_->getNumberOfBones())
-		return false;
-	current_bone_ = i;
-	return true;
-}
+// bool GUI::setCurrentBone(int i)
+// {
+// 	if (i < 0 || i >= mesh_->getNumberOfBones())
+// 		return false;
+// 	current_bone_ = i;
+// 	return true;
+// }
 
 bool GUI::captureWASDUPDOWN(int key, int action)
 {
@@ -236,14 +271,14 @@ void GUI::setRay(Ray& ray, double mouse_x, double mouse_y)
 
 	ray.p = eye_;
 
-	float z_val = -100.0f;
+	float z_val = 100.0f;
 	float y_val = z_val * glm::tan((float)(kFov/2 * (M_PI / 180.0f)));
 	float x_val = aspect_ * y_val;
 
 	float n_x = ((2.0f*mouse_x) / (window_width_)) - 1.0f;
-	float n_y = ((2.0f*mouse_y) / (window_height_)) - 1.0f;
+	float n_y = -1.0f * (((2.0f*mouse_y) / (window_height_)) - 1.0f);
 
-	glm::vec3 zAxis = -1.0f * glm::normalize(center_ - eye_);
+	glm::vec3 zAxis = glm::normalize(center_ - eye_);
 	glm::vec3 xAxis = glm::normalize(glm::cross(zAxis, up_));
 	glm::vec3 yAxis = glm::normalize(glm::cross(xAxis, zAxis));
 
@@ -255,7 +290,7 @@ void GUI::setRay(Ray& ray, double mouse_x, double mouse_y)
 	// mesh_->skeleton.getVerticesVector()[mesh_->skeleton.getVerticesVector().size()-1] = glm::vec4(q.x, q.y, q.z, 1.0f);
 }
 
-void GUI::highlightBones(const Ray& ray)
+void GUI::highlightBones(const Ray& ray, Bone*& bone)
 {
-	mesh_->skeleton.highlightBones(ray);
+	mesh_->skeleton.highlightBones(ray, bone);
 }

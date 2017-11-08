@@ -87,6 +87,8 @@ glm/gtx/io.hpp
 -
 glm/gtx/transform.hpp
 -
+glm/gtx/rotate_vector.hpp
+-
 
 /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
 ostream

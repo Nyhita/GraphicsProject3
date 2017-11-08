@@ -38,8 +38,8 @@ public:
 	void clearPose() { pose_changed_ = false; }
 	const float* getLightPositionPtr() const { return &light_position_[0]; }
 	
-	int getCurrentBone() const { return current_bone_; }
-	bool setCurrentBone(int i);
+	//int getCurrentBone() const { return current_bone_; }
+	//bool setCurrentBone(int i);
 
 	bool isTransparent() const { return transparent_; }
 
@@ -49,7 +49,7 @@ public:
 	const glm::mat4 MVP() const;
 
 	void setRay(Ray& ray, double mouse_x, double mouse_y);
-	void highlightBones(const Ray& ray);
+	void highlightBones(const Ray& ray, Bone*& bone);
 
 private:
 	GLFWwindow* window_;
@@ -61,7 +61,7 @@ private:
 	bool fps_mode_ = false;
 	bool pose_changed_ = true;
 	bool transparent_ = false;
-	int current_bone_ = -1;
+	
 	int current_button_ = -1;
 	float roll_speed_ = 0.1;
 	float last_x_ = 0.0f, last_y_ = 0.0f, current_x_ = 0.0f, current_y_ = 0.0f;
@@ -70,6 +70,9 @@ private:
 	float rotation_speed_ = 0.02f;
 	float zoom_speed_ = 0.1f;
 	float aspect_;
+
+	//int current_bone_ = -1;
+	Bone* current_bone_ = NULL; 
 
 	glm::vec3 eye_ = glm::vec3(0.0f, 0.1f, camera_distance_);
 	glm::vec3 up_ = glm::vec3(0.0f, 1.0f, 0.0f);
