@@ -83,10 +83,13 @@ struct Skeleton {
 	// FIXME: create skeleton and bone data structures
 private:
 	Bone* bone_root;
+	
 	std::vector<glm::vec4> skeleton_vertices;
 	std::vector<glm::vec4> cylinder_vertices;
 	std::vector<glm::vec4> normal_vertices;
 	std::vector<glm::vec4> binormal_vertices;
+
+	std::vector<std::vector<float>> weights;
 
 public:
 	Skeleton();
@@ -96,6 +99,9 @@ public:
 	Bone* getBoneRoot() { return bone_root;}
 
 	void generateVertices();
+
+	void initializeWeightsMatrix(int bone_count, int vertex_count);
+	void setJointWeights(std::vector<SparseTuple>& weights_data);
 
 	void initVertices(std::vector<glm::vec4>& vertices, int size);
 	void initCylinderVertices();

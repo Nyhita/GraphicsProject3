@@ -244,6 +244,12 @@ public:
 			//std::cerr << bdef2.GetBoneID(0) << "\t" << bdef2.GetBoneID(1) << "\t" << bdef2.GetBoneWeight() << endl;
 		}
 	}
+
+	size_t getVertexCount()
+	{
+		return model_.GetVertexNum();
+	}
+
 private:
 	mmd::Model model_;
 	std::unordered_map<int, int> useful_bone_to_pmd_bone_, pmd_bone_to_useful_bone_;
@@ -284,4 +290,9 @@ bool MMDReader::getJoint(int id, glm::vec3& offset, int& parent)
 void MMDReader::getJointWeights(std::vector<SparseTuple>& tup)
 {
 	d_->getJointWeights(tup);
+}
+
+size_t MMDReader::getVertexCount()
+{
+	return d_->getVertexCount();
 }

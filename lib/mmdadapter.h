@@ -83,6 +83,9 @@ public:
 	 * See SparseTuple for more details
 	 */
 	void getJointWeights(std::vector<SparseTuple>& tup);
+
+	size_t getVertexCount();
+
 private:
 	std::unique_ptr<MMDAdapter> d_;
 };

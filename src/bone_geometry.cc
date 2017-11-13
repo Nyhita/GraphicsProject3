@@ -167,6 +167,24 @@ void Skeleton::regenerateBinormalVertices(Bone* highlight_bone)
 	highlight_bone->generateBinormalAxis(binormal_vertices, TSs, AXIS_LENGTH);
 }
 
+void Skeleton::initializeWeightsMatrix(int bone_count, int vertex_count)
+{
+	weights = std::vector<std::vector<float>>(bone_count, std::vector<float> (vertex_count, 0.0f ));
+	std::cout << "Test: " << weights[95][7160] << "\n";
+}
+
+void Skeleton::setJointWeights(std::vector<SparseTuple>& weights_data)
+{
+	typedef std::vector<SparseTuple>::const_iterator iter;
+	for(iter i = weights_data.begin(); i != weights_data.end(); ++i) 
+	{
+		SparseTuple wd = (*i);
+		//std::cout << "SparseTuple: jid: " << wd.jid << " vid: " << wd.vid << " weight: " << wd.weight << "\n";
+		weights[wd.jid][wd.vid] = wd.weight;
+		//std::cout << "Weights: weight: " << weights[wd.jid][wd.vid] << "\n";
+	}
+}
+
 // Inspired from http://www.cplusplus.com/forum/beginner/9735/
 bool quadraticFormula(float a, float b, float c, float& t0, float& t1)
 {
@@ -690,12 +708,26 @@ void Mesh::loadpmd(const std::string& fn)
 	while(mr.getJoint(i, offset, parent))
 		skeleton.addBone(i++, offset, parent);
 
+
+	// Setting up bone weights
+	int bone_count = i;
+	int vertex_count = static_cast<int>(mr.getVertexCount());
+	skeleton.initializeWeightsMatrix(bone_count, vertex_count);
+
+	std::vector<SparseTuple> weights_data;
+
+	mr.getJointWeights(weights_data);
+
+	skeleton.setJointWeights(weights_data);
+
+	// Set up vertices and vertices arrays
 	skeleton.generateVertices();
 
 	skeleton.initCylinderVertices();
 	skeleton.initNormalVertices();
 	skeleton.initBinormalVertices();
 
+	// Set dirty to change the image
 	isDirty = true;
 }
 
