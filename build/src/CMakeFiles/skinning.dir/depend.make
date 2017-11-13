@@ -13,7 +13,7 @@ src/CMakeFiles/skinning.dir/gui.cc.o: ../lib/image.h
 src/CMakeFiles/skinning.dir/gui.cc.o: ../lib/jpegio.h
 src/CMakeFiles/skinning.dir/gui.cc.o: ../lib/material.h
 src/CMakeFiles/skinning.dir/gui.cc.o: ../lib/mmdadapter.h
-src/CMakeFiles/skinning.dir/gui.cc.o: /lusr/opt/glfw-3.1.2/include/GLFW/glfw3.h
+src/CMakeFiles/skinning.dir/gui.cc.o: /usr/local/include/GLFW/glfw3.h
 src/CMakeFiles/skinning.dir/gui.cc.o: ../src/bone_geometry.h
 src/CMakeFiles/skinning.dir/gui.cc.o: ../src/config.h
 src/CMakeFiles/skinning.dir/gui.cc.o: ../src/gui.cc
@@ -23,7 +23,7 @@ src/CMakeFiles/skinning.dir/main.cc.o: ../lib/debuggl.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../lib/image.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../lib/material.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../lib/mmdadapter.h
-src/CMakeFiles/skinning.dir/main.cc.o: /lusr/opt/glfw-3.1.2/include/GLFW/glfw3.h
+src/CMakeFiles/skinning.dir/main.cc.o: /usr/local/include/GLFW/glfw3.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/bone_geometry.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/config.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/gui.h

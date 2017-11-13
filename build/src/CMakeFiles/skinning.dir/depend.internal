@@ -5,53 +5,53 @@ src/CMakeFiles/skinning.dir/bone_geometry.cc.o
  ../lib/image.h
  ../lib/material.h
  ../lib/mmdadapter.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.cc
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.cc
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
 src/CMakeFiles/skinning.dir/gui.cc.o
  ../lib/debuggl.h
  ../lib/image.h
  ../lib/jpegio.h
  ../lib/material.h
  ../lib/mmdadapter.h
- /lusr/opt/glfw-3.1.2/include/GLFW/glfw3.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/gui.cc
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/gui.h
+ /usr/local/include/GLFW/glfw3.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/gui.cc
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/gui.h
 src/CMakeFiles/skinning.dir/main.cc.o
  ../lib/debuggl.h
  ../lib/image.h
  ../lib/material.h
  ../lib/mmdadapter.h
- /lusr/opt/glfw-3.1.2/include/GLFW/glfw3.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/gui.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/main.cc
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/procedure_geometry.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/render_pass.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/binormal.frag
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.frag
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.geom
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.vert
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/cylinder.frag
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.frag
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.geom
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.vert
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/floor.frag
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/normal.frag
+ /usr/local/include/GLFW/glfw3.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/gui.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/main.cc
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/procedure_geometry.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/render_pass.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/binormal.frag
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.frag
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.geom
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.vert
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/cylinder.frag
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.frag
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.geom
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.vert
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/floor.frag
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/normal.frag
 src/CMakeFiles/skinning.dir/procedure_geometry.cc.o
  ../lib/image.h
  ../lib/material.h
  ../lib/mmdadapter.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/procedure_geometry.cc
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/procedure_geometry.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/procedure_geometry.cc
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/procedure_geometry.h
 src/CMakeFiles/skinning.dir/render_pass.cc.o
  ../lib/debuggl.h
  ../lib/image.h
  ../lib/material.h
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/render_pass.cc
- /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/render_pass.h
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/render_pass.cc
+ /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/render_pass.h

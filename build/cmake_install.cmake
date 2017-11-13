@@ -1,4 +1,4 @@
-# Install script for directory: /v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3
+# Install script for directory: /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build/src/cmake_install.cmake")
+  include("/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/build/src/cmake_install.cmake")
 
 endif()
 
@@ -46,5 +46,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

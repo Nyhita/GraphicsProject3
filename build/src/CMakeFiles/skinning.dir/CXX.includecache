@@ -36,7 +36,7 @@ string
 glm/glm.hpp
 -
 
-/lusr/opt/glfw-3.1.2/include/GLFW/glfw3.h
+/usr/local/include/GLFW/glfw3.h
 stddef.h
 -
 OpenGL/gl3.h
@@ -72,11 +72,11 @@ GL/glext.h
 GL/glu.h
 -
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.cc
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.cc
 config.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
 bone_geometry.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
 fstream
 -
 iostream
@@ -90,7 +90,7 @@ glm/gtx/transform.hpp
 glm/gtx/rotate_vector.hpp
 -
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
 ostream
 -
 vector
@@ -104,13 +104,13 @@ glm/glm.hpp
 mmdadapter.h
 -
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/gui.cc
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/gui.cc
 gui.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/gui.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/gui.h
 config.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
 jpegio.h
 -
 iostream
@@ -124,7 +124,7 @@ glm/gtc/matrix_transform.hpp
 glm/gtx/transform.hpp
 -
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/gui.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/gui.h
 glm/glm.hpp
 -
 glm/gtc/matrix_transform.hpp
@@ -134,23 +134,23 @@ GLFW/glfw3.h
 iostream
 -
 bone_geometry.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/main.cc
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/main.cc
 GL/glew.h
 -
 dirent.h
 -
 bone_geometry.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
 procedure_geometry.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/procedure_geometry.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/procedure_geometry.h
 render_pass.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/render_pass.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/render_pass.h
 config.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
 gui.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/gui.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/gui.h
 algorithm
 -
 fstream
@@ -172,45 +172,45 @@ glm/gtx/io.hpp
 debuggl.h
 -
 shaders/default.vert
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.vert
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.vert
 shaders/default.geom
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.geom
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.geom
 shaders/default.frag
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.frag
 shaders/floor.frag
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/floor.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/floor.frag
 shaders/bone.frag
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.frag
 shaders/bone.vert
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.vert
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.vert
 shaders/bone.geom
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.geom
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.geom
 shaders/cylinder.frag
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/cylinder.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/cylinder.frag
 shaders/normal.frag
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/normal.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/normal.frag
 shaders/binormal.frag
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/binormal.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/binormal.frag
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/procedure_geometry.cc
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/procedure_geometry.cc
 procedure_geometry.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/procedure_geometry.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/procedure_geometry.h
 bone_geometry.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/bone_geometry.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/bone_geometry.h
 config.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/config.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/config.h
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/procedure_geometry.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/procedure_geometry.h
 vector
 -
 glm/glm.hpp
 -
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/render_pass.cc
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/render_pass.cc
 GL/glew.h
 -
 render_pass.h
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/render_pass.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/render_pass.h
 iostream
 -
 debuggl.h
@@ -218,7 +218,7 @@ debuggl.h
 map
 -
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/render_pass.h
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/render_pass.h
 vector
 -
 string
@@ -230,23 +230,23 @@ functional
 material.h
 -
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/binormal.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/binormal.frag
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.frag
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.geom
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.geom
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/bone.vert
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/bone.vert
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/cylinder.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/cylinder.frag
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.frag
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.geom
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.geom
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/default.vert
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/default.vert
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/floor.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/floor.frag
 
-/v/filer5b/v38q001/nelwap97/Documents/CS354/Project4/gitrepo/GraphicsProject3/src/shaders/normal.frag
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/normal.frag
 

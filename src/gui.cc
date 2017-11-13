@@ -73,6 +73,7 @@ void GUI::keyCallback(int key, int scancode, int action, int mods)
 			mesh_->skeleton.regenerateHighlightBone(current_bone_);
 			mesh_->skeleton.regenerateNormalVertices(current_bone_);
 			mesh_->skeleton.regenerateBinormalVertices(current_bone_);
+			pose_changed_ = true;
 		}
 	} else if (key == GLFW_KEY_C && action != GLFW_RELEASE) {
 		fps_mode_ = !fps_mode_;
@@ -146,7 +147,7 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
 		mesh_->skeleton.regenerateHighlightBone(current_bone_);
 		mesh_->skeleton.regenerateNormalVertices(current_bone_);
 		mesh_->skeleton.regenerateBinormalVertices(current_bone_);
-
+		pose_changed_ = true;
 		return ;
 	}
 

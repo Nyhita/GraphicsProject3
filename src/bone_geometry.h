@@ -38,6 +38,8 @@ private:
 	glm::mat4 T;
 	glm::mat4 R;
 	glm::mat4 S;
+	glm::mat4 U;
+	glm::mat4 D;
 	std::vector<Bone*> bone_children;
 	Bone* parent_bone;
 
@@ -46,7 +48,23 @@ private:
 public:
 	Bone(int _jid, glm::vec3& offset, Bone* parent);
 	~Bone();
-	Bone* findBone(int _jid, glm::mat4& TSs);
+
+	// Project 5
+	void generateLBSMatrices(glm::mat4 TRs, glm::mat4 TSs);
+
+	Bone* findBoneTS(int _jid, glm::mat4& TSs);
+	Bone* findBoneTR(int _jid, glm::mat4& TRs);
+
+	glm::mat4 getTransformed();
+	glm::mat4 getDeformed();
+
+	void setTransformed(glm::mat4 TRs);
+	void setDeformed(glm::mat4 TSs);
+
+	const std::vector<Bone*>& getBoneChildren() const {return bone_children; } 
+
+	// End of Project 5
+
 	void addBone(int _jid, glm::vec3 offset);
 	int getJid() {return jid;}
 	bool hasParent() {return (parent_bone != NULL);}
@@ -100,8 +118,18 @@ public:
 
 	void generateVertices();
 
+	// Project 5
+	
+	void generateLBSMatrices();
 	void initializeWeightsMatrix(int bone_count, int vertex_count);
 	void setJointWeights(std::vector<SparseTuple>& weights_data);
+
+	glm::mat4 findBoneMatrixU(int _jid);
+	glm::mat4 findBoneMatrixD(int _jid);
+
+	const std::vector<std::vector<float>>& getWeights() const;
+
+	// End Project 5
 
 	void initVertices(std::vector<glm::vec4>& vertices, int size);
 	void initCylinderVertices();
@@ -115,6 +143,7 @@ public:
 
 	std::vector<glm::vec4>& getVerticesVector();
 	std::vector<glm::vec4>& getCylinderVerticesVector();
+
 
 	//void findBoneIntersect(const Ray* ray, Bone* bone, float& t);
 	void highlightBones(const Ray& ray, Bone*& highlight_bone);
@@ -139,6 +168,9 @@ struct Mesh {
 	Skeleton skeleton;
 	bool isDirty;
 	bool show;
+
+	int bone_count;
+	int vertex_count;
 
 	void loadpmd(const std::string& fn);
 	void updateAnimation();

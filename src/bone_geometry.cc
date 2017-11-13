@@ -68,7 +68,7 @@ void Skeleton::generateVertices()
 void Skeleton::addBone(int _jid, glm::vec3 offset, int parent)
 {
 	glm::mat4 TSs(1.0f);
-	Bone* parent_bone = bone_root->findBone(parent, TSs);
+	Bone* parent_bone = bone_root->findBoneTS(parent, TSs);
 	parent_bone->addBone(_jid, offset);
 }
 
@@ -103,6 +103,10 @@ void Skeleton::initBinormalVertices()
 	initVertices(binormal_vertices, 2);
 }
 
+const std::vector<std::vector<float>>& Skeleton::getWeights() const 
+{ 
+	return weights;
+}
 
 const std::vector<glm::vec4>& Skeleton::getCylinderVertices() const
 {
@@ -147,7 +151,7 @@ void Skeleton::regenerateHighlightBone(Bone* highlight_bone)
 {
 	cylinder_vertices.clear();
 	glm::mat4 TSs;
-	bone_root->findBone(highlight_bone->getJid(), TSs);
+	bone_root->findBoneTS(highlight_bone->getJid(), TSs);
 	highlight_bone->generateCylinderLines(cylinder_vertices, TSs, HIGHLIGHT_RADIUS);
 }
 
@@ -155,7 +159,7 @@ void Skeleton::regenerateNormalVertices(Bone* highlight_bone)
 {
 	normal_vertices.clear();
 	glm::mat4 TSs;
-	bone_root->findBone(highlight_bone->getJid(), TSs);
+	bone_root->findBoneTS(highlight_bone->getJid(), TSs);
 	highlight_bone->generateNormalAxis(normal_vertices, TSs, AXIS_LENGTH);
 }
 
@@ -163,7 +167,7 @@ void Skeleton::regenerateBinormalVertices(Bone* highlight_bone)
 {
 	binormal_vertices.clear();
 	glm::mat4 TSs;
-	bone_root->findBone(highlight_bone->getJid(), TSs);
+	bone_root->findBoneTS(highlight_bone->getJid(), TSs);
 	highlight_bone->generateBinormalAxis(binormal_vertices, TSs, AXIS_LENGTH);
 }
 
@@ -179,10 +183,29 @@ void Skeleton::setJointWeights(std::vector<SparseTuple>& weights_data)
 	for(iter i = weights_data.begin(); i != weights_data.end(); ++i) 
 	{
 		SparseTuple wd = (*i);
-		//std::cout << "SparseTuple: jid: " << wd.jid << " vid: " << wd.vid << " weight: " << wd.weight << "\n";
+		std::cout << "SparseTuple: jid: " << wd.jid << " vid: " << wd.vid << " weight: " << wd.weight << "\n";
 		weights[wd.jid][wd.vid] = wd.weight;
 		//std::cout << "Weights: weight: " << weights[wd.jid][wd.vid] << "\n";
 	}
+}
+
+glm::mat4 Skeleton::findBoneMatrixU(int _jid)
+{
+	glm::mat4 TRs(1.0f);
+	Bone* bone = bone_root->findBoneTR(_jid, TRs);
+	return bone->getTransformed();
+}
+
+glm::mat4 Skeleton::findBoneMatrixD(int _jid)
+{
+	glm::mat4 TSs(1.0f);
+	Bone* bone = bone_root->findBoneTS(_jid, TSs);
+	return bone->getDeformed();
+}
+
+void Skeleton::generateLBSMatrices()
+{
+	bone_root->generateLBSMatrices(glm::mat4(1.0f), glm::mat4(1.0f));
 }
 
 // Inspired from http://www.cplusplus.com/forum/beginner/9735/
@@ -524,13 +547,53 @@ void Bone::addJointVertices(std::vector<glm::vec4>& skeleton_vertices, glm::mat4
 
 }
 
+void Bone::generateLBSMatrices(glm::mat4 TRs, glm::mat4 TSs)
+{
+	if(jid != 0)
+	{
+		setTransformed(TRs);
+		setDeformed(TSs);
+	}
+
+	glm::mat4 new_TR = TRs * T * R;
+	glm::mat4 new_TS = TSs * T * S;
+
+	typedef std::vector<Bone*>::const_iterator iter;
+	for(iter i = bone_children.begin(); i != bone_children.end(); ++i) 
+	{
+		Bone* bone_child = (*i);
+		bone_child->generateLBSMatrices(new_TR, new_TS);
+	}
+
+}
+
 void Bone::addBone(int _jid, glm::vec3 offset)
 {
 	// std::cout << "Parent bone jid: " << (this)->jid << "\n";
 	bone_children.push_back(new Bone(_jid, offset, this));
 }
 
-Bone* Bone::findBone(int _jid, glm::mat4& TSs)
+glm::mat4 Bone::getTransformed()
+{
+	return U;
+}
+
+glm::mat4 Bone::getDeformed()
+{
+	return D;
+}
+
+void Bone::setTransformed(glm::mat4 TRs)
+{
+	U = TRs * T * R;
+}
+
+void Bone::setDeformed(glm::mat4 TSs)
+{
+	D = TSs * T * S;
+}
+
+Bone* Bone::findBoneTS(int _jid, glm::mat4& TSs)
 {
 	if(jid == _jid)
 	{
@@ -544,12 +607,36 @@ Bone* Bone::findBone(int _jid, glm::mat4& TSs)
 	for(iter i = bone_children.begin(); i != bone_children.end(); ++i) 
 	{
 		Bone* bone_child = (*i);
-		Bone* search_bone = bone_child->findBone(_jid, TSs);
+		Bone* search_bone = bone_child->findBoneTS(_jid, TSs);
 		if(search_bone != NULL)
 			return search_bone;
 	}
 
 	TSs = TSstart;
+
+	return NULL;
+}
+
+Bone* Bone::findBoneTR(int _jid, glm::mat4& TRs)
+{
+	if(jid == _jid)
+	{
+		return (this);
+	}
+
+	glm::mat4 TRstart = TRs;
+	TRs = TRstart * T * R;
+
+	typedef std::vector<Bone*>::const_iterator iter;
+	for(iter i = bone_children.begin(); i != bone_children.end(); ++i) 
+	{
+		Bone* bone_child = (*i);
+		Bone* search_bone = bone_child->findBoneTR(_jid, TRs);
+		if(search_bone != NULL)
+			return search_bone;
+	}
+
+	TRs = TRstart;
 
 	return NULL;
 }
@@ -708,10 +795,10 @@ void Mesh::loadpmd(const std::string& fn)
 	while(mr.getJoint(i, offset, parent))
 		skeleton.addBone(i++, offset, parent);
 
-
-	// Setting up bone weights
-	int bone_count = i;
-	int vertex_count = static_cast<int>(mr.getVertexCount());
+	// Project 5: Setting up bone weights
+	
+	bone_count = i;
+	vertex_count = static_cast<int>(vertices.size());
 	skeleton.initializeWeightsMatrix(bone_count, vertex_count);
 
 	std::vector<SparseTuple> weights_data;
@@ -719,6 +806,10 @@ void Mesh::loadpmd(const std::string& fn)
 	mr.getJointWeights(weights_data);
 
 	skeleton.setJointWeights(weights_data);
+
+	std::cout << "vertices size: " << vertices.size() << "\n";
+
+	// End Project 5
 
 	// Set up vertices and vertices arrays
 	skeleton.generateVertices();
@@ -733,9 +824,42 @@ void Mesh::loadpmd(const std::string& fn)
 
 void Mesh::updateAnimation()
 {
-	animated_vertices = vertices;
+	//animated_vertices = vertices;
 	// FIXME: blend the vertices to animated_vertices, rather than copy
 	//        the data directly.
+
+	animated_vertices = std::vector<glm::vec4>(vertices.size(), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+
+	skeleton.generateLBSMatrices();
+	std::vector<std::vector<float>> weights = skeleton.getWeights();
+
+	// Iterate through joint ids
+	int jid = 0;
+	int vid = 0;
+
+	for(jid = 0; jid < bone_count; ++jid)
+	{
+		glm::mat4 TSs(1.0f);
+		Bone* jointBone = skeleton.getBoneRoot()->findBoneTS(jid, TSs);
+		const std::vector<Bone*>& jointBones = jointBone->getBoneChildren();
+
+		for(vid = 0; vid < vertex_count; ++vid)
+		{
+			if(weights[jid][vid] == 0.0f)
+				continue;
+
+			//std::cout << "weights: " << weights[jid][vid] << "\n";
+
+			typedef std::vector<Bone*>::const_iterator iter;
+			for(iter i = jointBones.begin(); i != jointBones.end(); ++i) 
+			{
+				Bone* bone = (*i);
+				glm::mat4 U = bone->getTransformed();
+				glm::mat4 D = bone->getDeformed();
+				animated_vertices[vid] += weights[jid][vid] * D * glm::inverse(U) * vertices[vid];
+			}			
+		}
+	}
 }
 
 
