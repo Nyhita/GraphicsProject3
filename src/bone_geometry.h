@@ -32,6 +32,7 @@ struct Bone {
 private:
 	int jid;
 	float Length;
+	int bid = -1;
 	
 	glm::vec3 end_joint;
 	glm::mat4 Axis;
@@ -62,6 +63,9 @@ public:
 	void setDeformed(glm::mat4 TSs);
 
 	const std::vector<Bone*>& getBoneChildren() const {return bone_children; } 
+
+	int getBid() { return bid; }
+	void setBid(int id) { bid = id; }
 
 	// End of Project 5
 
@@ -121,7 +125,7 @@ public:
 	// Project 5
 	
 	void generateLBSMatrices(std::vector<glm::mat4>& Ds, std::vector<glm::mat4>& Us);
-	void initializeWeightsMatrix(int bone_count, int vertex_count);
+	int initializeWeightsMatrix(std::vector<SparseTuple>& weights_data, int bone_count, int vertex_count);
 	void setJointWeights(std::vector<SparseTuple>& weights_data);
 
 	glm::mat4 findBoneMatrixU(int _jid);

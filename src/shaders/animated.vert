@@ -2,9 +2,8 @@ R"zzz(
 #version 330 core
 uniform vec4 light_position;
 uniform vec3 camera_position;
-uniform mat4[100] Ds;
-uniform mat4[100] Us;
-uniform int bone_count;
+uniform mat4[127] Ds;
+uniform mat4[127] Us;
 in vec4 vertex_position;
 in vec4 normal;
 in vec2 uv;

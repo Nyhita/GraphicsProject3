@@ -171,10 +171,44 @@ void Skeleton::regenerateBinormalVertices(Bone* highlight_bone)
 	highlight_bone->generateBinormalAxis(binormal_vertices, TSs, AXIS_LENGTH);
 }
 
-void Skeleton::initializeWeightsMatrix(int bone_count, int vertex_count)
+int Skeleton::initializeWeightsMatrix(std::vector<SparseTuple>& weights_data, int bone_count, int vertex_count)
 {
-	weights = std::vector<std::vector<float>>(vertex_count, std::vector<float> (bone_count, 0.0f ));
+	int bone_used_count = 0;
+	std::vector<bool> bones_used(bone_count, false);
+	typedef std::vector<SparseTuple>::const_iterator iter;
+	for(iter i = weights_data.begin(); i != weights_data.end(); ++i) 
+	{
+		SparseTuple wd = (*i);
+		glm::mat4 TSs(1.0f);
+		Bone* jointBone = bone_root->findBoneTS(wd.jid, TSs);
+		const std::vector<Bone*>& jointBones = jointBone->getBoneChildren();
+
+		typedef std::vector<Bone*>::const_iterator iter;
+		for(iter i = jointBones.begin(); i != jointBones.end(); ++i) 
+		{
+			Bone* bone = (*i);
+			if(bones_used[bone->getJid()] == false)
+			{
+				//std::cout << "Bone ids: " << bone->getJid() << "\n";
+				bones_used[bone->getJid()] = true;
+				bone->setBid(bone_used_count++);
+			}
+		}
+	}
+
+	int count = 0;
+	for(int j = 0; j < bone_count; ++j)
+	{
+		if(bones_used[j])
+			++count;
+	}
+
+	//std::cout << "bone used count" << bone_used_count << "\n";
+	//std::cout << "bone count" << count << "\n";
+
+	weights = std::vector<std::vector<float>>(vertex_count, std::vector<float> (bone_used_count, 0.0f ));
 	//std::cout << "Test: " << weights[95][7160] << "\n";
+	return bone_used_count;
 }
 
 void Skeleton::setJointWeights(std::vector<SparseTuple>& weights_data)
@@ -191,7 +225,7 @@ void Skeleton::setJointWeights(std::vector<SparseTuple>& weights_data)
 		for(iter i = jointBones.begin(); i != jointBones.end(); ++i) 
 		{
 			Bone* bone = (*i);
-			weights[wd.vid][bone->getJid()] = wd.weight;
+			weights[wd.vid][bone->getBid()] = wd.weight;
 		}
 	}
 
@@ -563,8 +597,15 @@ void Bone::generateLBSMatrices(std::vector<glm::mat4>& Ds, std::vector<glm::mat4
 {
 	if(jid != 0)
 	{
-		Us[jid] = TRs * T * R;
-		Ds[jid] = TSs * T * S;
+		if(bid != -1)
+		{
+			Us[bid] = TRs * T * R;
+			Ds[bid] = TSs * T * S;
+		}
+		else
+		{
+			//std::cout << "OMG!\n";
+		}
 		//setTransformed(TRs);
 		//setDeformed(TSs);
 	}
@@ -812,17 +853,23 @@ void Mesh::loadpmd(const std::string& fn)
 	// Project 5: Setting up bone weights
 	
 	bone_count = i;
+
+	std::cout << "bone count: " << bone_count << "\n";
+
 	vertex_count = static_cast<int>(vertices.size());
-	skeleton.initializeWeightsMatrix(bone_count, vertex_count);
 
 	std::vector<SparseTuple> weights_data;
 
 	mr.getJointWeights(weights_data);
 
+	int bones_used = skeleton.initializeWeightsMatrix(weights_data, bone_count, vertex_count);
+
 	skeleton.setJointWeights(weights_data);
 
-	Us = std::vector<glm::mat4>(bone_count, glm::mat4(1.0f));
-	Ds = std::vector<glm::mat4>(bone_count, glm::mat4(1.0f));
+	std::cout << "bones used: " << bones_used << "\n";
+
+	Us = std::vector<glm::mat4>(bones_used, glm::mat4(1.0f));
+	Ds = std::vector<glm::mat4>(bones_used, glm::mat4(1.0f));
 
 	std::vector<std::vector<float>> weights = skeleton.getWeights();
 
@@ -832,13 +879,13 @@ void Mesh::loadpmd(const std::string& fn)
 	for(vid = 0; vid < vertex_count; ++vid)
 	{
 		int count = 0;
-		for(jid = 0; jid < bone_count; ++jid)
+		for(jid = 0; jid < bones_used; ++jid)
 		{
 			if(weights[vid][jid] <= 0.0f)
 				continue;
 
-			if(count == 0)
-				std::cout << "bone id: " << jid << "\n";
+			//if(count == 0)
+			//	std::cout << "bone id: " << jid << "\n";
 
 			weights_array.push_back(weights[vid][jid]);
 			bone_ids.push_back(jid);
@@ -855,7 +902,7 @@ void Mesh::loadpmd(const std::string& fn)
 		//std::cout << "count: " << count << "\n";
 	}
 
-	std::cout << "Size of arrays" << (bone_ids.size()) << "\n";
+	//std::cout << "Size of arrays" << (bone_ids.size()) << "\n";
 
 	//std::cout << "vertices size: " << vertices.size() << "\n";
 
@@ -880,6 +927,8 @@ void Mesh::updateAnimation()
 
 	// Regenerate the Us and Ds
 	skeleton.generateLBSMatrices(Ds, Us);
+
+	//std::cout << "\n";
 
 	// animated_vertices = std::vector<glm::vec4>(vertices.size(), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
