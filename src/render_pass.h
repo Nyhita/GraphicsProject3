@@ -132,6 +132,15 @@ public:
 	           const std::vector<ShaderUniform> uniforms,
 	           const std::vector<const char*> output // Order: 0, 1, 2...
 		  );
+	
+	RenderPass(int vao, // -1: create new VAO, otherwise use given VAO
+	   const RenderDataInput& input,
+	   const std::vector<const char*> shaders, // Order: VS, GS, FS 
+	   const std::vector<ShaderUniform> uniforms,
+	   const std::vector<const char*> output, // Order: 0, 1, 2...
+	   bool custom_shader
+	  );
+
 	~RenderPass();
 
 	unsigned getVAO() const { return unsigned(vao_); }

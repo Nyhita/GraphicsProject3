@@ -191,6 +191,8 @@ shaders/normal.frag
 /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/normal.frag
 shaders/binormal.frag
 /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/binormal.frag
+shaders/animated.vert
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/animated.vert
 
 /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/procedure_geometry.cc
 procedure_geometry.h
@@ -229,6 +231,8 @@ functional
 -
 material.h
 -
+
+/v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/animated.vert
 
 /v/filer5b/v38q001/nelwap97/Documents/CS354/Project5/GraphicsProject3/src/shaders/binormal.frag
 

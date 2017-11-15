@@ -31,8 +31,10 @@ GUI::GUI(GLFWwindow* window)
 
 	glfwGetWindowSize(window_, &window_width_, &window_height_);
 	float aspect_ = static_cast<float>(window_width_) / window_height_;
-	std::cout << "window width: " << window_width_ << " window_height_: " << window_height_ << "\n";
+	//std::cout << "window width: " << window_width_ << " window_height_: " << window_height_ << "\n";
 	projection_matrix_ = glm::perspective((float)(kFov * (M_PI / 180.0f)), aspect_, kNear, kFar);
+
+	projection_matrix_[3][2] = - kFar / (kFar - kNear);
 }
 
 GUI::~GUI()
@@ -53,6 +55,9 @@ void GUI::keyCallback(int key, int scancode, int action, int mods)
 	}
 	if (key == GLFW_KEY_J && action == GLFW_RELEASE) {
 		//FIXME save out a screenshot using SaveJPEG
+		unsigned char* pixels = new unsigned char[3 * window_width_ * window_height_];
+		glReadPixels(0, 0, window_width_, window_height_, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+		SaveJPEG("saved_file.jpg", window_width_, window_height_, pixels);
 	}
 
 	//if(key == GLFW_KEY_M)
@@ -139,7 +144,7 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
 
 		glm::vec3 mouse_vector = glm::normalize(xAxis*mouse_delta.x + yAxis*mouse_delta.y);
 
-		glm::vec3 rotation_axis = -glm::normalize(glm::cross(mouse_vector, zAxis));
+		glm::vec3 rotation_axis = glm::normalize(glm::cross(mouse_vector, zAxis));
 
 		current_bone_->rotateBone(rotation_axis, angle_magnitude);
 
@@ -157,6 +162,8 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
 		Bone* highlight_bone = NULL;
 		highlightBones(mouse_ray, highlight_bone);
 		current_bone_ = highlight_bone;
+		//if(current_bone_)
+		//	std::cout << "current bone id: " << current_bone_->getJid() << "\n";
 	}
 }
 
@@ -181,6 +188,8 @@ void GUI::updateMatrices()
 	projection_matrix_ =
 		glm::perspective((float)(kFov * (M_PI / 180.0f)), aspect_, kNear, kFar);
 	model_matrix_ = glm::mat4(1.0f);
+
+	projection_matrix_[3][2] = - kFar / (kFar - kNear);
 }
 
 MatrixPointers GUI::getMatrixPointers() const

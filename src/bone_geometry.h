@@ -50,7 +50,7 @@ public:
 	~Bone();
 
 	// Project 5
-	void generateLBSMatrices(glm::mat4 TRs, glm::mat4 TSs);
+	void generateLBSMatrices(std::vector<glm::mat4>& Ds, std::vector<glm::mat4>& Us, glm::mat4 TRs, glm::mat4 TSs);
 
 	Bone* findBoneTS(int _jid, glm::mat4& TSs);
 	Bone* findBoneTR(int _jid, glm::mat4& TRs);
@@ -114,13 +114,13 @@ public:
 	~Skeleton();
 	void addBone(int _jid, glm::vec3 offset, int parent);
 	void addRootBone(glm::vec3 offset);
-	Bone* getBoneRoot() { return bone_root;}
+	Bone* getBoneRoot() { return bone_root; }
 
 	void generateVertices();
 
 	// Project 5
 	
-	void generateLBSMatrices();
+	void generateLBSMatrices(std::vector<glm::mat4>& Ds, std::vector<glm::mat4>& Us);
 	void initializeWeightsMatrix(int bone_count, int vertex_count);
 	void setJointWeights(std::vector<SparseTuple>& weights_data);
 
@@ -164,6 +164,11 @@ struct Mesh {
 	std::vector<glm::vec2> uv_coordinates;
 	std::vector<Material> materials;
 
+	std::vector<glm::mat4> Ds;
+	std::vector<glm::mat4> Us;
+	std::vector<float> weights_array;
+	std::vector<int> bone_ids;
+
 	BoundingBox bounds;
 	Skeleton skeleton;
 	bool isDirty;
@@ -176,7 +181,7 @@ struct Mesh {
 	void updateAnimation();
 	int getNumberOfBones() const 
 	{ 
-		return skeleton.getVertices().size()/2;
+		return bone_count;
 		// FIXME: return number of bones in skeleton
 	}
 	glm::vec3 getCenter() const { return 0.5f * glm::vec3(bounds.min + bounds.max); }

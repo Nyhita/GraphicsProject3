@@ -63,6 +63,10 @@ const char* binormal_fragment_shader =
 #include "shaders/binormal.frag"
 ;
 
+const char* animated_vertex_shader =
+#include "shaders/animated.vert"
+;
+
 void ErrorCallback(int error, const char* description) {
 	std::cerr << "GLFW Error: " << description << "\n";
 }
@@ -137,7 +141,7 @@ int main(int argc, char* argv[])
 	gui.assignMesh(&mesh);
 
 	glm::vec4 light_position = glm::vec4(0.0f, 100.0f, 0.0f, 1.0f);
-	MatrixPointers mats; // Define MatrixPointers here for lambda to capture
+	MatrixPointers mats; // Define MatrixPoFinters here for lambda to capture
 	/*
 	 * In the following we are going to define several lambda functions to bind Uniforms.
 	 * 
@@ -160,6 +164,9 @@ int main(int argc, char* argv[])
 	};
 	auto float_binder = [](int loc, const void* data) {
 		glUniform1fv(loc, 1, (const GLfloat*)data);
+	};
+	auto int_binder = [](int loc, const void* data){
+		glUniform1iv(loc, 1, (const GLint*)data);
 	};
 	/*
 	 * These lambda functions below are used to retrieve data
@@ -191,6 +198,22 @@ int main(int argc, char* argv[])
 		else
 			return &non_transparet;
 	};
+
+	glm::mat4* deformed = mesh.Ds.data();
+	glm::mat4* undeformed = mesh.Us.data();
+
+	auto undeformed_matrices_data = [undeformed]() -> const void* {
+		return &undeformed[0][0];
+	};
+	auto deformed_matrices_data = [deformed]() -> const void* {
+		return &deformed[0][0];
+	};
+
+	int bone_size = mesh.getNumberOfBones();
+	auto bone_count_data = [bone_size]() -> const void* {
+		return &bone_size;
+	};
+
 	// FIXME: add more lambdas for data_source if you want to use RenderPass.
 	//        Otherwise, do whatever you like here
 	ShaderUniform std_model = { "model", matrix_binder, std_model_data };
@@ -202,25 +225,62 @@ int main(int argc, char* argv[])
 	ShaderUniform object_alpha = { "alpha", float_binder, alpha_data };
 	// FIXME: define more ShaderUniforms for RenderPass if you want to use it.
 	//        Otherwise, do whatever you like here
+	ShaderUniform undeformed_matrices = { "Us", bone_matrix_binder, undeformed_matrices_data};
+	ShaderUniform deformed_matrices = { "Ds", bone_matrix_binder, deformed_matrices_data};
+	ShaderUniform bone_count_uni = { "bone_count", int_binder, bone_count_data};
 
 	std::vector<glm::vec2>& uv_coordinates = mesh.uv_coordinates;
+	// RenderDataInput object_pass_input;
+	// object_pass_input.assign(0, "vertex_position", nullptr, mesh.vertices.size(), 4, GL_FLOAT);
+	// object_pass_input.assign(1, "normal", mesh.vertex_normals.data(), mesh.vertex_normals.size(), 4, GL_FLOAT);
+	// object_pass_input.assign(2, "uv", uv_coordinates.data(), uv_coordinates.size(), 2, GL_FLOAT);
+	// object_pass_input.assign_index(mesh.faces.data(), mesh.faces.size(), 3);
+	// object_pass_input.useMaterials(mesh.materials);
+	// RenderPass object_pass(-1,
+	// 		object_pass_input,
+	// 		{
+	// 		  animated_vertex_shader,
+	// 		  geometry_shader,
+	// 		  fragment_shader
+	// 		},
+	// 		{ std_model, std_view, std_proj,
+	// 		  std_light,
+	// 		  std_camera, object_alpha },
+	// 		{ "fragment_color" }
+	// 		);
+
 	RenderDataInput object_pass_input;
 	object_pass_input.assign(0, "vertex_position", nullptr, mesh.vertices.size(), 4, GL_FLOAT);
 	object_pass_input.assign(1, "normal", mesh.vertex_normals.data(), mesh.vertex_normals.size(), 4, GL_FLOAT);
 	object_pass_input.assign(2, "uv", uv_coordinates.data(), uv_coordinates.size(), 2, GL_FLOAT);
+	// std::cout << "mesh weights array size: " << mesh.weights_array.size() << "\n";
+	// std::cout << "bone count: " << mesh.getNumberOfBones() << "\n";
+	// std::cout << "division: " << (mesh.weights_array.size()/mesh.getNumberOfBones()) << "\n";
+	// std::cout << "assign length: " << mesh.vertices.size() << "\n";
+	
+	object_pass_input.assign(3, "weights1", mesh.weights_array.data(), mesh.weights_array.size()/4, 4, GL_FLOAT);
+	object_pass_input.assign(4, "weights2", mesh.weights_array.data(), mesh.weights_array.size()/4, 4, GL_FLOAT);
+	object_pass_input.assign(5, "weights3", mesh.weights_array.data(), mesh.weights_array.size()/4, 4, GL_FLOAT);
+
+	object_pass_input.assign(6, "bone_ids1", mesh.bone_ids.data(), mesh.bone_ids.size()/4, 4, GL_INT);
+	object_pass_input.assign(7, "bone_ids2", mesh.bone_ids.data(), mesh.bone_ids.size()/4, 4, GL_INT);
+	object_pass_input.assign(8, "bone_ids3", mesh.bone_ids.data(), mesh.bone_ids.size()/4, 4, GL_INT);
+
 	object_pass_input.assign_index(mesh.faces.data(), mesh.faces.size(), 3);
 	object_pass_input.useMaterials(mesh.materials);
 	RenderPass object_pass(-1,
 			object_pass_input,
 			{
-			  vertex_shader,
+			  animated_vertex_shader,
 			  geometry_shader,
 			  fragment_shader
 			},
 			{ std_model, std_view, std_proj,
 			  std_light,
-			  std_camera, object_alpha },
-			{ "fragment_color" }
+			  std_camera, object_alpha,
+			  undeformed_matrices, deformed_matrices, bone_count_uni},
+			{ "fragment_color" },
+			true
 			);
 
 	// FIXME: Create the RenderPass objects for bones here.
